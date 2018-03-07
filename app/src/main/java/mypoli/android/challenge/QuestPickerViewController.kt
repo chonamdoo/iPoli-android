@@ -65,9 +65,7 @@ class QuestPickerViewController(args: Bundle? = null) :
         val searchItem = menu.findItem(R.id.actionSearch)
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
+            override fun onQueryTextSubmit(query: String) = false
 
             override fun onQueryTextChange(newText: String): Boolean {
                 dispatch(QuestPickerAction.Filter(newText))
@@ -132,8 +130,8 @@ class QuestPickerViewController(args: Bundle? = null) :
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    fun QuestPickerViewState.toViewModels(): List<QuestPickerViewController.QuestViewModel> {
-        val result = resultQuests.map {
+    private fun QuestPickerViewState.toViewModels() =
+        filteredQuests.map {
             when (it) {
                 is PickerQuest.OneTime -> {
                     val quest = it.quest
@@ -153,38 +151,10 @@ class QuestPickerViewController(args: Bundle? = null) :
                         name = rq.name,
                         color = rq.color.androidColor.color500,
                         icon = rq.icon?.androidIcon?.icon ?: Ionicons.Icon.ion_android_clipboard,
-                        isRepeating = false,
+                        isRepeating = true,
                         isSelected = false
                     )
                 }
             }
         }
-
-        return listOf(
-            QuestViewModel(
-                "",
-                "Run 3 km",
-                R.color.md_green_500,
-                Ionicons.Icon.ion_android_clipboard,
-                false,
-                false
-            ),
-            QuestViewModel(
-                "",
-                "Eat every day",
-                R.color.md_red_500,
-                Ionicons.Icon.ion_clipboard,
-                true,
-                false
-            ),
-            QuestViewModel(
-                "",
-                "Read",
-                R.color.md_blue_500,
-                Ionicons.Icon.ion_clipboard,
-                false,
-                true
-            )
-        )
-    }
 }
