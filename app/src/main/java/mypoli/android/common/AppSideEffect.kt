@@ -6,6 +6,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import mypoli.android.Constants
+import mypoli.android.challenge.entity.Challenge
 import mypoli.android.challenge.predefined.category.list.ChallengeListForCategoryAction
 import mypoli.android.challenge.usecase.BuyChallengeUseCase
 import mypoli.android.common.DataLoadedAction.PlayerChanged
@@ -525,6 +526,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
 
     private val playerRepository by required { playerRepository }
     private val questRepository by required { questRepository }
+    private val challengeRepository by required { challengeRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val findNextDateForRepeatingQuestUseCase by required { findNextDateForRepeatingQuestUseCase }
     private val findPeriodProgressForRepeatingQuestUseCase by required { findPeriodProgressForRepeatingQuestUseCase }
@@ -532,6 +534,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private var playerChannel: ReceiveChannel<Player?>? = null
     private var todayQuestsChannel: ReceiveChannel<List<Quest>>? = null
     private var repeatingQuestsChannel: ReceiveChannel<List<RepeatingQuest>>? = null
+    private var challengesChannel: ReceiveChannel<List<Challenge>>? = null
 
     override suspend fun doExecute(action: Action, state: AppState) {
 
@@ -539,10 +542,12 @@ class LoadAllDataSideEffect : AppSideEffect() {
             playerChannel?.cancel()
             todayQuestsChannel?.cancel()
             repeatingQuestsChannel?.cancel()
+            challengesChannel?.cancel()
 
             playerChannel = null
             todayQuestsChannel = null
             repeatingQuestsChannel = null
+            challengesChannel = null
 
             playerRepository.purge(action.oldPlayerId)
             listenForPlayer()
@@ -553,6 +558,19 @@ class LoadAllDataSideEffect : AppSideEffect() {
             listenForPlayer()
             listenForQuests(state)
             listenForRepeatingQuests()
+            listenForChallenges()
+        }
+    }
+
+    private fun listenForChallenges() {
+        launch(UI) {
+            challengesChannel?.cancel()
+            challengesChannel = challengeRepository.listenForAll()
+            challengesChannel!!.consumeEach {
+                launch(CommonPool) {
+                    dispatch(DataLoadedAction.ChallengesChanged(it))
+                }
+            }
         }
     }
 
