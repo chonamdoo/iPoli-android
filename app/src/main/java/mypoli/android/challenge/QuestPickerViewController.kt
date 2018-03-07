@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.controller_quest_picker.view.*
 import kotlinx.android.synthetic.main.item_quest_picker.view.*
 import kotlinx.android.synthetic.main.view_default_toolbar.view.*
 import mypoli.android.R
+import mypoli.android.challenge.QuestPickerViewState.StateType.DATA_CHANGED
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@ipoli.io>
@@ -46,11 +46,7 @@ class QuestPickerViewController(args: Bundle? = null) :
         toolbarTitle = "Choose quests"
         view.questList.layoutManager =
             LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
-        view.questList.adapter = QuestAdapter(listOf(
-            QuestViewModel("", "Run 3 km", R.color.md_green_500, Ionicons.Icon.ion_android_clipboard, false, false),
-            QuestViewModel("", "Eat every day", R.color.md_red_500, Ionicons.Icon.ion_clipboard, true, false),
-            QuestViewModel("", "Read", R.color.md_blue_500, Ionicons.Icon.ion_clipboard, false, true)
-        ))
+        view.questList.adapter = QuestAdapter()
         return view
     }
 
@@ -74,22 +70,18 @@ class QuestPickerViewController(args: Bundle? = null) :
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                Timber.d("AAAA $newText")
-//                if (StringUtils.isEmpty(newText)) {
-//                    filter("") { quests -> adapter.setQuests(quests) }
-//                    return true
-//                }
-//
-//                if (newText.trim { it <= ' ' }.length < MIN_FILTER_QUERY_LEN) {
-//                    return true
-//                }
-//                filter(newText.trim { it <= ' ' }) { quests -> adapter.setQuests(quests) }
+                dispatch(QuestPickerAction.Filter(newText))
                 return true
             }
         })
     }
 
     override fun render(state: QuestPickerViewState, view: View) {
+        when (state.type) {
+            DATA_CHANGED -> {
+                (view.questList.adapter as QuestAdapter).updateAll(state.toViewModels())
+            }
+        }
 
     }
 
@@ -140,5 +132,59 @@ class QuestPickerViewController(args: Bundle? = null) :
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
+    fun QuestPickerViewState.toViewModels(): List<QuestPickerViewController.QuestViewModel> {
+        val result = resultQuests.map {
+            when (it) {
+                is PickerQuest.OneTime -> {
+                    val quest = it.quest
+                    QuestPickerViewController.QuestViewModel(
+                        id = quest.id,
+                        name = quest.name,
+                        color = quest.color.androidColor.color500,
+                        icon = quest.icon?.androidIcon?.icon ?: Ionicons.Icon.ion_android_clipboard,
+                        isRepeating = false,
+                        isSelected = false
+                    )
+                }
+                is PickerQuest.Repeating -> {
+                    val rq = it.repeatingQuest
+                    QuestPickerViewController.QuestViewModel(
+                        id = rq.id,
+                        name = rq.name,
+                        color = rq.color.androidColor.color500,
+                        icon = rq.icon?.androidIcon?.icon ?: Ionicons.Icon.ion_android_clipboard,
+                        isRepeating = false,
+                        isSelected = false
+                    )
+                }
+            }
+        }
 
+        return listOf(
+            QuestViewModel(
+                "",
+                "Run 3 km",
+                R.color.md_green_500,
+                Ionicons.Icon.ion_android_clipboard,
+                false,
+                false
+            ),
+            QuestViewModel(
+                "",
+                "Eat every day",
+                R.color.md_red_500,
+                Ionicons.Icon.ion_clipboard,
+                true,
+                false
+            ),
+            QuestViewModel(
+                "",
+                "Read",
+                R.color.md_blue_500,
+                Ionicons.Icon.ion_clipboard,
+                false,
+                true
+            )
+        )
+    }
 }
