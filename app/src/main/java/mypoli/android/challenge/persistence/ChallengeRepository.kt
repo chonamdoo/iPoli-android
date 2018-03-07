@@ -7,8 +7,8 @@ import mypoli.android.common.datetime.Time
 import mypoli.android.common.datetime.instant
 import mypoli.android.common.datetime.startOfDayUTC
 import mypoli.android.common.persistence.BaseCollectionFirestoreRepository
+import mypoli.android.common.persistence.CollectionRepository
 import mypoli.android.common.persistence.FirestoreModel
-import mypoli.android.common.persistence.Repository
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
 import kotlin.coroutines.experimental.CoroutineContext
@@ -17,7 +17,7 @@ import kotlin.coroutines.experimental.CoroutineContext
  * Created by Venelin Valkov <venelin@mypoli.fun>
  * on 03/07/2018.
  */
-interface ChallengeRepository : Repository<Challenge>
+interface ChallengeRepository : CollectionRepository<Challenge>
 
 class FirestoreChallengeRepository(
     database: FirebaseFirestore,
