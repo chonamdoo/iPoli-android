@@ -5,18 +5,21 @@ import android.os.Bundle
 import android.support.annotation.ColorRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.widget.SearchView
+import android.view.*
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.ionicons_typeface_library.Ionicons
 import kotlinx.android.synthetic.main.controller_quest_picker.view.*
 import kotlinx.android.synthetic.main.item_quest_picker.view.*
+import kotlinx.android.synthetic.main.view_default_toolbar.view.*
 import mypoli.android.R
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.colorRes
+import mypoli.android.common.view.setToolbar
+import mypoli.android.common.view.toolbarTitle
 import mypoli.android.common.view.visible
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@ipoli.io>
@@ -27,13 +30,23 @@ class QuestPickerViewController(args: Bundle? = null) :
 
     override val reducer = QuestPickerReducer
 
+    private lateinit var challengeId: String
+
+    constructor(
+        challengeId: String
+    ) : this() {
+        this.challengeId = challengeId
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.controller_quest_picker, null)
-
+        setToolbar(view.toolbar)
+        toolbarTitle = "Choose quests"
         view.questList.layoutManager =
             LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
         view.questList.adapter = QuestAdapter(listOf(
@@ -42,6 +55,32 @@ class QuestPickerViewController(args: Bundle? = null) :
             QuestViewModel("", "Read", R.color.md_blue_500, Ionicons.Icon.ion_clipboard, false, true)
         ))
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.quest_picker_menu, menu)
+        val searchItem = menu.findItem(R.id.actionSearch)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                Timber.d("AAAA $newText")
+//                if (StringUtils.isEmpty(newText)) {
+//                    filter("") { quests -> adapter.setQuests(quests) }
+//                    return true
+//                }
+//
+//                if (newText.trim { it <= ' ' }.length < MIN_FILTER_QUERY_LEN) {
+//                    return true
+//                }
+//                filter(newText.trim { it <= ' ' }) { quests -> adapter.setQuests(quests) }
+                return true
+            }
+        })
     }
 
     override fun render(state: QuestPickerViewState, view: View) {

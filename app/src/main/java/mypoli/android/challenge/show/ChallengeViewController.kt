@@ -70,7 +70,7 @@ class ChallengeViewController(args: Bundle? = null) :
         view.addQuests.setOnClickListener {
             val changeHandler = FadeChangeHandler()
             rootRouter.pushController(
-                RouterTransaction.with(QuestPickerViewController())
+                RouterTransaction.with(QuestPickerViewController(challengeId))
                     .pushChangeHandler(changeHandler)
                     .popChangeHandler(changeHandler)
             )
