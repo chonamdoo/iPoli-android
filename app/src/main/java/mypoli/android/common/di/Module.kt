@@ -13,6 +13,7 @@ import mypoli.android.challenge.persistence.ChallengeRepository
 import mypoli.android.challenge.persistence.FirestoreChallengeRepository
 import mypoli.android.challenge.predefined.PersonalizeChallengePresenter
 import mypoli.android.challenge.predefined.category.ChallengeCategoryListPresenter
+import mypoli.android.challenge.sideeffect.ChallengeSideEffect
 import mypoli.android.challenge.usecase.BuyChallengeUseCase
 import mypoli.android.challenge.usecase.ScheduleChallengeUseCase
 import mypoli.android.common.*
@@ -567,7 +568,8 @@ class AndroidStateStoreModule : StateStoreModule, Injects<Module> {
                 BuyPetSideEffect(),
                 DayViewSideEffect(),
                 RepeatingQuestSideEffect(),
-                AddQuestSideEffect()
+                AddQuestSideEffect(),
+                ChallengeSideEffect()
             ),
             sideEffectExecutor = CoroutineSideEffectExecutor(job + CommonPool)
         )

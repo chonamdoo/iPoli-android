@@ -15,10 +15,7 @@ import kotlinx.android.synthetic.main.item_quest_picker.view.*
 import kotlinx.android.synthetic.main.view_default_toolbar.view.*
 import mypoli.android.R
 import mypoli.android.common.redux.android.ReduxViewController
-import mypoli.android.common.view.colorRes
-import mypoli.android.common.view.setToolbar
-import mypoli.android.common.view.toolbarTitle
-import mypoli.android.common.view.visible
+import mypoli.android.common.view.*
 import timber.log.Timber
 
 /**
@@ -55,6 +52,15 @@ class QuestPickerViewController(args: Bundle? = null) :
             QuestViewModel("", "Read", R.color.md_blue_500, Ionicons.Icon.ion_clipboard, false, true)
         ))
         return view
+    }
+
+    override fun onCreateLoadAction(): QuestPickerAction? {
+        return QuestPickerAction.Load(challengeId)
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        showBackButton()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
