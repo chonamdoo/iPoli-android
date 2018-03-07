@@ -1,5 +1,6 @@
 package mypoli.android.common
 
+import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.Reducer
 import mypoli.android.common.redux.State
@@ -20,6 +21,9 @@ sealed class DataLoadedAction : Action {
     data class PlayerChanged(val player: Player) : DataLoadedAction()
     data class TodayQuestsChanged(val quests: List<Quest>) : DataLoadedAction()
     data class RepeatingQuestsChanged(val repeatingQuests: List<RepeatingQuest>) :
+        DataLoadedAction()
+
+    data class ChallengesChanged(val challenges: List<Challenge>) :
         DataLoadedAction()
 
     data class AgendaItemsChanged(
@@ -44,6 +48,7 @@ data class AppDataState(
     val todayQuests: List<Quest>,
     val calendarSchedule: Map<LocalDate, Schedule>,
     val repeatingQuests: List<RepeatingQuest>,
+    val challenges: List<Challenge>,
     val agendaItems: List<CreateAgendaItemsUseCase.AgendaItem>
 ) : State
 
@@ -90,6 +95,7 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
             todayQuests = listOf(),
             calendarSchedule = mapOf(),
             repeatingQuests = listOf(),
+            challenges = listOf(),
             agendaItems = listOf()
         )
     }

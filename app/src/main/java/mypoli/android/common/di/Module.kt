@@ -9,6 +9,8 @@ import com.couchbase.lite.DatabaseConfiguration
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Job
+import mypoli.android.challenge.persistence.ChallengeRepository
+import mypoli.android.challenge.persistence.FirestoreChallengeRepository
 import mypoli.android.challenge.predefined.PersonalizeChallengePresenter
 import mypoli.android.challenge.predefined.category.ChallengeCategoryListPresenter
 import mypoli.android.challenge.sideeffect.ChallengeSideEffect
@@ -80,6 +82,7 @@ interface RepositoryModule {
     val questRepository: QuestRepository
     val playerRepository: PlayerRepository
     val repeatingQuestRepository: RepeatingQuestRepository
+    val challengeRepository: ChallengeRepository
 }
 
 class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
@@ -109,6 +112,14 @@ class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
                 sharedPreferences
             )
         }
+
+    override val challengeRepository by required {
+        FirestoreChallengeRepository(
+            firestoreDatabase,
+            job + CommonPool,
+            sharedPreferences
+        )
+    }
 
 }
 
