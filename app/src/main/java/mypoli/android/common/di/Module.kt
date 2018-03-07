@@ -9,11 +9,16 @@ import com.couchbase.lite.DatabaseConfiguration
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Job
+import mypoli.android.challenge.persistence.ChallengeRepository
+import mypoli.android.challenge.persistence.FirestoreChallengeRepository
 import mypoli.android.challenge.predefined.PersonalizeChallengePresenter
 import mypoli.android.challenge.predefined.category.ChallengeCategoryListPresenter
 import mypoli.android.challenge.usecase.BuyChallengeUseCase
 import mypoli.android.challenge.usecase.ScheduleChallengeUseCase
 import mypoli.android.common.*
+import mypoli.android.common.rate.AndroidRatePopupScheduler
+import mypoli.android.common.rate.RatePopupScheduler
+import mypoli.android.common.rate.RatePresenter
 import mypoli.android.common.redux.CoroutineSideEffectExecutor
 import mypoli.android.common.redux.StateStore
 import mypoli.android.common.text.CalendarFormatter
@@ -42,16 +47,17 @@ import mypoli.android.quest.job.AndroidJobQuestCompleteScheduler
 import mypoli.android.quest.job.AndroidJobReminderScheduler
 import mypoli.android.quest.job.QuestCompleteScheduler
 import mypoli.android.quest.job.ReminderScheduler
-import mypoli.android.quest.schedule.agenda.usecase.CreateAgendaItemsUseCase
-import mypoli.android.quest.schedule.agenda.usecase.FindAgendaDatesUseCase
-import mypoli.android.quest.usecase.*
-import mypoli.android.quest.view.QuestCompletePresenter
-import mypoli.android.common.rate.AndroidRatePopupScheduler
-import mypoli.android.common.rate.RatePopupScheduler
-import mypoli.android.common.rate.RatePresenter
 import mypoli.android.quest.reminder.formatter.ReminderTimeFormatter
 import mypoli.android.quest.reminder.formatter.TimeUnitFormatter
 import mypoli.android.quest.reminder.picker.ReminderPickerDialogPresenter
+import mypoli.android.quest.schedule.agenda.usecase.CreateAgendaItemsUseCase
+import mypoli.android.quest.schedule.agenda.usecase.FindAgendaDatesUseCase
+import mypoli.android.quest.timer.TimerPresenter
+import mypoli.android.quest.timer.job.AndroidJobTimerCompleteScheduler
+import mypoli.android.quest.timer.job.TimerCompleteScheduler
+import mypoli.android.quest.timer.usecase.*
+import mypoli.android.quest.usecase.*
+import mypoli.android.quest.view.QuestCompletePresenter
 import mypoli.android.repeatingquest.AndroidSaveQuestsForRepeatingQuestScheduler
 import mypoli.android.repeatingquest.SaveQuestsForRepeatingQuestScheduler
 import mypoli.android.repeatingquest.persistence.FirestoreRepeatingQuestRepository
@@ -63,10 +69,6 @@ import mypoli.android.store.theme.ThemeStorePresenter
 import mypoli.android.store.theme.usecase.BuyThemeUseCase
 import mypoli.android.store.theme.usecase.ChangeThemeUseCase
 import mypoli.android.store.usecase.PurchaseGemPackUseCase
-import mypoli.android.quest.timer.TimerPresenter
-import mypoli.android.quest.timer.job.AndroidJobTimerCompleteScheduler
-import mypoli.android.quest.timer.job.TimerCompleteScheduler
-import mypoli.android.quest.timer.usecase.*
 import space.traversal.kapsule.HasModules
 import space.traversal.kapsule.Injects
 import space.traversal.kapsule.required
@@ -79,6 +81,7 @@ interface RepositoryModule {
     val questRepository: QuestRepository
     val playerRepository: PlayerRepository
     val repeatingQuestRepository: RepeatingQuestRepository
+    val challengeRepository: ChallengeRepository
 }
 
 class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
@@ -108,6 +111,14 @@ class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
                 sharedPreferences
             )
         }
+
+    override val challengeRepository by required {
+        FirestoreChallengeRepository(
+            firestoreDatabase,
+            job + CommonPool,
+            sharedPreferences
+        )
+    }
 
 }
 

@@ -1,9 +1,9 @@
 package mypoli.android.repeatingquest.persistence
 
 import android.content.SharedPreferences
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import mypoli.android.common.datetime.Time
+import mypoli.android.common.datetime.instant
 import mypoli.android.common.datetime.startOfDayUTC
 import mypoli.android.common.persistence.BaseCollectionFirestoreRepository
 import mypoli.android.common.persistence.CollectionRepository
@@ -27,7 +27,6 @@ import kotlin.coroutines.experimental.CoroutineContext
 interface RepeatingQuestRepository : CollectionRepository<RepeatingQuest> {
     fun findAllActive(currentDate: LocalDate = LocalDate.now()): List<RepeatingQuest>
 }
-
 
 data class DbRepeatingQuest(override val map: MutableMap<String, Any?> = mutableMapOf()) :
     FirestoreModel {
@@ -73,7 +72,7 @@ class FirestoreRepeatingQuestRepository(
     sharedPreferences
 ), RepeatingQuestRepository {
 
-    override val collectionReference: CollectionReference
+    override val collectionReference
         get() = database.collection("players").document(playerId).collection("repeatingQuests")
 
     override fun findAllActive(currentDate: LocalDate): List<RepeatingQuest> {
@@ -109,7 +108,9 @@ class FirestoreRepeatingQuestRepository(
                 val cr = DbReminder(it)
                 Reminder(cr.message, Time.of(cr.minute), cr.date?.startOfDayUTC)
             },
-            repeatingPattern = createRepeatingPattern(DbRepeatingPattern(rq.repeatingPattern))
+            repeatingPattern = createRepeatingPattern(DbRepeatingPattern(rq.repeatingPattern)),
+            createdAt = rq.createdAt.instant,
+            updatedAt = rq.updatedAt.instant
         )
     }
 

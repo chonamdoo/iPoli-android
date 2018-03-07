@@ -22,10 +22,20 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
         action: Action
     ) = when (action) {
         is ChallengeListAction.LoadData -> {
-            subState
+            createState(subState, state.dataState.challenges)
         }
         else -> subState
     }
+
+    private fun createState(
+        subState: ChallengeListViewState,
+        challenges: List<Challenge>
+    ) =
+        subState.copy(
+            type = ChallengeListViewState.StateType.CHANGED,
+            challenges = challenges,
+            showEmptyView = challenges.isEmpty()
+        )
 
     override fun defaultState() =
         ChallengeListViewState(
