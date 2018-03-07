@@ -22,38 +22,26 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
         action: Action
     ) = when (action) {
         is ChallengeListAction.LoadData -> {
-            createState(subState, state.dataState.challenges)
+
+            val challenges = state.dataState.challenges
+
+            when {
+                challenges.isEmpty() -> ChallengeListViewState.Empty
+                else -> ChallengeListViewState.Changed(challenges)
+            }
         }
         else -> subState
     }
 
-    private fun createState(
-        subState: ChallengeListViewState,
-        challenges: List<Challenge>
-    ) =
-        subState.copy(
-            type = ChallengeListViewState.StateType.CHANGED,
-            challenges = challenges,
-            showEmptyView = challenges.isEmpty()
-        )
 
-    override fun defaultState() =
-        ChallengeListViewState(
-            type = ChallengeListViewState.StateType.LOADING,
-            challenges = listOf(),
-            showEmptyView = false
-        )
+    override fun defaultState() = ChallengeListViewState.Loading
 
     override val stateKey = key<ChallengeListViewState>()
 }
 
-data class ChallengeListViewState(
-    val type: StateType,
-    val challenges: List<Challenge>,
-    val showEmptyView: Boolean
-) : ViewState {
-    enum class StateType {
-        LOADING,
-        CHANGED
-    }
+sealed class ChallengeListViewState : ViewState {
+    object Loading : ChallengeListViewState()
+    object Empty : ChallengeListViewState()
+
+    data class Changed(val challenges: List<Challenge>) : ChallengeListViewState()
 }

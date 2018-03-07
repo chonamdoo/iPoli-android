@@ -22,6 +22,7 @@ import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.text.DurationFormatter
 import mypoli.android.common.view.*
+import mypoli.android.common.view.recyclerview.SimpleViewHolder
 import mypoli.android.repeatingquest.entity.repeatType
 import mypoli.android.repeatingquest.list.RepeatingQuestListViewState.StateType.CHANGED
 import mypoli.android.repeatingquest.show.RepeatingQuestViewController
@@ -90,10 +91,10 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
     )
 
     inner class RepeatingQuestAdapter(private var viewModels: List<RepeatingQuestViewModel> = listOf()) :
-        RecyclerView.Adapter<RepeatingQuestAdapter.ViewHolder>() {
+        RecyclerView.Adapter<SimpleViewHolder>() {
 
         override fun onBindViewHolder(
-            holder: RepeatingQuestAdapter.ViewHolder,
+            holder: SimpleViewHolder,
             position: Int
         ) {
             val vm = viewModels[position]
@@ -138,8 +139,8 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): RepeatingQuestAdapter.ViewHolder =
-            ViewHolder(
+        ): SimpleViewHolder =
+            SimpleViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_repeating_quest,
                     parent,
@@ -149,12 +150,11 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
 
         override fun getItemCount() = viewModels.size
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
         fun updateAll(viewModels: List<RepeatingQuestViewModel>) {
             this.viewModels = viewModels
             notifyDataSetChanged()
         }
+
 
     }
 
