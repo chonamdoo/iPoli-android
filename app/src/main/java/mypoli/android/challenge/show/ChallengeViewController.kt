@@ -12,7 +12,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
@@ -24,7 +24,6 @@ import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.*
 import mypoli.android.repeatingquest.show.RepeatingQuestViewController
-import timber.log.Timber
 
 
 /**
@@ -134,11 +133,10 @@ class ChallengeViewController(args: Bundle? = null) :
         super.onDetach(view)
     }
 
-    class XAxisValueFormatter(private val labels: List<String>) : IndexAxisValueFormatter(labels) {
+    class XAxisValueFormatter(private val labels: List<String>) : IAxisValueFormatter {
 
         override fun getFormattedValue(value: Float, axis: AxisBase): String {
             val idx = value.toInt()
-            Timber.d("AAA $value")
             return if (idx < 0 || idx >= labels.size) {
                 ""
             } else labels[idx]
