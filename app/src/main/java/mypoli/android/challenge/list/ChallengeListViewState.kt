@@ -3,6 +3,7 @@ package mypoli.android.challenge.list
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.DataLoadedAction
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 
@@ -16,21 +17,28 @@ sealed class ChallengeListAction : Action {
 }
 
 object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
+
     override fun reduce(
         state: AppState,
         subState: ChallengeListViewState,
         action: Action
     ) = when (action) {
         is ChallengeListAction.LoadData -> {
-
-            val challenges = state.dataState.challenges
-
-            when {
-                challenges.isEmpty() -> ChallengeListViewState.Empty
-                else -> ChallengeListViewState.Changed(challenges)
-            }
+            createState(state.dataState.challenges)
         }
+
+        is DataLoadedAction.ChallengesChanged -> {
+            createState(action.challenges)
+        }
+
         else -> subState
+    }
+
+    private fun createState(challenges: List<Challenge>): ChallengeListViewState {
+        return when {
+            challenges.isEmpty() -> ChallengeListViewState.Empty
+            else -> ChallengeListViewState.Changed(challenges)
+        }
     }
 
 
