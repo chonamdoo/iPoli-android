@@ -5,6 +5,8 @@ import android.support.design.widget.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -19,6 +21,7 @@ import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import kotlinx.android.synthetic.main.controller_challenge.view.*
 import mypoli.android.MainActivity
 import mypoli.android.R
+import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.common.ViewUtils
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
@@ -63,6 +66,15 @@ class ChallengeViewController(args: Bundle? = null) :
         setupAppBar(view)
 
         setupHistoryChart(view.progressChart)
+
+        view.addQuests.setOnClickListener {
+            val changeHandler = FadeChangeHandler()
+            rootRouter.pushController(
+                RouterTransaction.with(QuestPickerViewController())
+                    .pushChangeHandler(changeHandler)
+                    .popChangeHandler(changeHandler)
+            )
+        }
 
         return view
     }
