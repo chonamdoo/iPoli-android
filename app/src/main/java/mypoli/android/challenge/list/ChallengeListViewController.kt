@@ -7,12 +7,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import kotlinx.android.synthetic.main.controller_challenge_list.view.*
 import kotlinx.android.synthetic.main.controller_repeating_quest_list.view.*
 import kotlinx.android.synthetic.main.item_challenge.view.*
 import mypoli.android.R
+import mypoli.android.challenge.add.AddChallengeViewController
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
+import mypoli.android.common.view.rootRouter
 import mypoli.android.common.view.stringRes
 import mypoli.android.common.view.toolbarTitle
 
@@ -39,6 +43,15 @@ class ChallengeListViewController(args: Bundle? = null) :
         view.challengeList.layoutManager =
             LinearLayoutManager(container.context, LinearLayoutManager.VERTICAL, false)
         view.challengeList.adapter = ChallengeAdapter()
+
+        view.addChallenge.setOnClickListener {
+            val handler = FadeChangeHandler()
+            rootRouter.pushController(
+                RouterTransaction.with(AddChallengeViewController())
+                    .pushChangeHandler(handler)
+                    .popChangeHandler(handler)
+            )
+        }
         return view
     }
 
