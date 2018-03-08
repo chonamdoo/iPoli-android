@@ -15,6 +15,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.TemporalAdjusters
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -97,7 +98,7 @@ class RepeatingQuestHistoryUseCaseSpek : Spek({
         }
 
         it("should return empty") {
-            val date = LocalDate.now().with(DayOfWeek.TUESDAY)
+            val date = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY))
             val questRepoMock = mock<QuestRepository> {
                 on {
                     findCompletedForRepeatingQuestInPeriod(
