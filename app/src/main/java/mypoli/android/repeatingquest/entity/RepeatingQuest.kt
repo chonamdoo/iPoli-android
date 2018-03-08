@@ -231,6 +231,7 @@ data class RepeatingQuest(
     val repeatingPattern: RepeatingPattern,
     val nextDate: LocalDate? = null,
     val periodProgress: PeriodProgress? = null,
+    val challengeId: String? = null,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
 ) : Entity {

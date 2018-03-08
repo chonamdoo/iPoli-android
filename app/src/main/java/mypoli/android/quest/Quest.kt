@@ -131,7 +131,8 @@ data class Quest(
     val coins: Int? = null,
     val bounty: Bounty? = null,
     val isRemoved: Boolean = false,
-    val repeatingQuestId: String? = null
+    val repeatingQuestId: String? = null,
+    val challengeId : String? = null
 ) : Entity {
 
     sealed class Bounty {

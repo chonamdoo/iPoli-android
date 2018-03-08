@@ -80,6 +80,7 @@ class QuestPickerViewController(args: Bundle? = null) :
             }
 
             R.id.actionSave -> {
+                dispatch(QuestPickerAction.Save)
                 true
             }
             else -> super.onOptionsItemSelected(item)

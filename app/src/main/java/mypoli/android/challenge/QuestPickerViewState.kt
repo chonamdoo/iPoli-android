@@ -23,6 +23,7 @@ sealed class QuestPickerAction : Action {
     data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) : QuestPickerAction()
     data class Filter(val query: String) : QuestPickerAction()
     data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()
+    object Save : QuestPickerAction()
 }
 
 object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {

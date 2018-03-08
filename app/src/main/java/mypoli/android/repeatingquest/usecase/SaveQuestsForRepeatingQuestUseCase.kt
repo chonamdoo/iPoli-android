@@ -296,7 +296,8 @@ class SaveQuestsForRepeatingQuestUseCase(
             reminder = rq.reminder?.copy(
                 remindDate = scheduleDate
             ),
-            repeatingQuestId = rq.id
+            repeatingQuestId = rq.id,
+            challengeId = rq.challengeId
         )
 
     private fun monthlyDatesToScheduleInPeriod(

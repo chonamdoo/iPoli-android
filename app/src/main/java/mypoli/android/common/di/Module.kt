@@ -15,6 +15,7 @@ import mypoli.android.challenge.predefined.PersonalizeChallengePresenter
 import mypoli.android.challenge.predefined.category.ChallengeCategoryListPresenter
 import mypoli.android.challenge.sideeffect.ChallengeSideEffect
 import mypoli.android.challenge.usecase.BuyChallengeUseCase
+import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
 import mypoli.android.challenge.usecase.ScheduleChallengeUseCase
 import mypoli.android.common.*
 import mypoli.android.common.rate.AndroidRatePopupScheduler
@@ -349,6 +350,12 @@ class MainUseCaseModule : UseCaseModule, Injects<Module> {
             questRepository,
             repeatingQuestRepository
         )
+
+    override val saveQuestsForChallengeUseCase
+        get() = SaveQuestsForChallengeUseCase(
+            questRepository,
+            repeatingQuestRepository
+        )
 }
 
 interface UseCaseModule {
@@ -399,6 +406,7 @@ interface UseCaseModule {
     val removeRepeatingQuestUseCase: RemoveRepeatingQuestUseCase
     val createRepeatingQuestHistoryUseCase: CreateRepeatingQuestHistoryUseCase
     val createPlaceholderQuestsForRepeatingQuestsUseCase: CreatePlaceholderQuestsForRepeatingQuestsUseCase
+    val saveQuestsForChallengeUseCase: SaveQuestsForChallengeUseCase
 }
 
 interface PresenterModule {
