@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.controller_add_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.common.redux.android.ReduxViewController
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -43,14 +44,18 @@ class AddChallengeViewController(args: Bundle? = null) :
     ) :
         RouterPagerAdapter(controller) {
         override fun configureRouter(router: Router, position: Int) {
+            Timber.d("AAA position $position")
             if (!router.hasRootController()) {
-//                val page = DayViewController(dayViewDate)
-                router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
+                Timber.d("AAA position false")
+                when (position) {
+                    0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
+                    1 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
+                }
             }
         }
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
-        override fun getCount() = 1
+        override fun getCount() = 2
     }
 }
