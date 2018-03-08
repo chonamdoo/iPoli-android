@@ -36,7 +36,7 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
             name = "",
             color = null,
             icon = null,
-            difficulty = Challenge.Difficulty.MEDIUM,
+            difficulty = Challenge.Difficulty.NORMAL,
             end = LocalDate.now(),
             motivationList = listOf(),
             quests = listOf()

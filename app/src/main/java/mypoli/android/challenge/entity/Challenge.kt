@@ -27,6 +27,6 @@ data class Challenge(
 ) : Entity {
 
     enum class Difficulty {
-        EASY, MEDIUM, HARD
+        EASY, NORMAL, HARD, HELL
     }
 }

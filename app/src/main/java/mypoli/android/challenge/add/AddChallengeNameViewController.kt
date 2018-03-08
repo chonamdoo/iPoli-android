@@ -47,7 +47,7 @@ object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>
             name = "",
             color = Color.GREEN,
             icon = null,
-            difficulty = Challenge.Difficulty.MEDIUM
+            difficulty = Challenge.Difficulty.NORMAL
         )
 }
 

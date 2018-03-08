@@ -1134,6 +1134,13 @@
         <item>Monthly</item>
     </string-array>
 
+    <string-array name="difficulties">
+        <item>Easy</item>
+        <item>Normal</item>
+        <item>Hard</item>
+        <item>Hell</item>
+    </string-array>
+
     <string name="facebook_application_id" translatable="false">1826884640679057</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1826884640679057</string>
 
