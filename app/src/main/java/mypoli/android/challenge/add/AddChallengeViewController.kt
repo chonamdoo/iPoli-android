@@ -37,6 +37,7 @@ class AddChallengeViewController(args: Bundle? = null) :
     }
 
     override fun render(state: AddChallengeViewState, view: View) {
+
     }
 
     class AddChallengePagerAdapter(
