@@ -1,7 +1,6 @@
 package mypoli.android.challenge
 
-import mypoli.android.challenge.QuestPickerViewState.StateType.DATA_CHANGED
-import mypoli.android.challenge.QuestPickerViewState.StateType.LOADING
+import mypoli.android.challenge.QuestPickerViewState.StateType.*
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
@@ -23,7 +22,7 @@ sealed class QuestPickerAction : Action {
     data class Load(val challengeId: String) : QuestPickerAction()
     data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) : QuestPickerAction()
     data class Filter(val query: String) : QuestPickerAction()
-
+    data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()
 }
 
 object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
@@ -42,7 +41,7 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
                 val quests = createPickerQuests(
                     listOf(
                         Quest(
-                            id = "",
+                            id = "1",
                             name = "Run",
                             color = Color.GREEN,
                             icon = Icon.PIZZA,
@@ -52,7 +51,7 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
                             scheduledDate = LocalDate.now()
                         ),
                         Quest(
-                            id = "",
+                            id = "2",
                             name = "Runing",
                             color = Color.ORANGE,
                             icon = Icon.MONEY,
@@ -64,7 +63,7 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
                     ),
                     listOf(
                         RepeatingQuest(
-                            id = "",
+                            id = "3",
                             name = "Runinja",
                             color = Color.BLUE_GREY,
                             icon = Icon.RESTAURANT,
@@ -97,6 +96,17 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
                         )
                     )
                 }
+            }
+
+            is QuestPickerAction.Check -> {
+                subState.copy(
+                    type = ITEM_SELECTED,
+                    selectedQuests = if (action.isSelected) {
+                        subState.selectedQuests + action.id
+                    } else {
+                        subState.selectedQuests - action.id
+                    }
+                )
             }
             else -> subState
         }
@@ -154,27 +164,30 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
             type = LOADING,
             challengeId = "",
             allQuests = listOf(),
-            filteredQuests = listOf()
+            filteredQuests = listOf(),
+            selectedQuests = setOf()
         )
 
 
 }
 
-sealed class PickerQuest(open val name: String, open val date: LocalDate?) {
-    data class OneTime(val quest: Quest) : PickerQuest(quest.name, quest.scheduledDate)
+sealed class PickerQuest(open val id: String, open val name: String, open val date: LocalDate?) {
+    data class OneTime(val quest: Quest) : PickerQuest(quest.id, quest.name, quest.scheduledDate)
     data class Repeating(val repeatingQuest: RepeatingQuest) :
-        PickerQuest(repeatingQuest.name, repeatingQuest.repeatingPattern.start)
+        PickerQuest(repeatingQuest.id, repeatingQuest.name, repeatingQuest.repeatingPattern.start)
 }
 
 data class QuestPickerViewState(
     val type: QuestPickerViewState.StateType,
     val challengeId: String,
     val allQuests: List<PickerQuest>,
-    val filteredQuests: List<PickerQuest>
+    val filteredQuests: List<PickerQuest>,
+    val selectedQuests: Set<String>
 ) : ViewState {
     enum class StateType {
         LOADING,
-        DATA_CHANGED
+        DATA_CHANGED,
+        ITEM_SELECTED
     }
 }
 

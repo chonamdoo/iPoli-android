@@ -17,7 +17,6 @@ import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewState.StateType.DATA_CHANGED
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@ipoli.io>
@@ -51,9 +50,7 @@ class QuestPickerViewController(args: Bundle? = null) :
         return view
     }
 
-    override fun onCreateLoadAction(): QuestPickerAction? {
-        return QuestPickerAction.Load(challengeId)
-    }
+    override fun onCreateLoadAction() = QuestPickerAction.Load(challengeId)
 
     override fun onAttach(view: View) {
         super.onAttach(view)
@@ -66,18 +63,27 @@ class QuestPickerViewController(args: Bundle? = null) :
         val searchItem = menu.findItem(R.id.actionSearch)
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String) : Boolean {
-                Timber.d("AAAAA submit $query")
-                return false
-            }
+            override fun onQueryTextSubmit(query: String) = false
 
             override fun onQueryTextChange(newText: String): Boolean {
-                Timber.d("AAAAA change $newText")
                 dispatch(QuestPickerAction.Filter(newText))
                 return true
             }
         })
     }
+
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
+            android.R.id.home -> {
+                router.popCurrentController()
+                true
+            }
+
+            R.id.actionSave -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     override fun render(state: QuestPickerViewState, view: View) {
         when (state.type) {
@@ -115,7 +121,11 @@ class QuestPickerViewController(args: Bundle? = null) :
             )
             view.questRepeatIndicator.visible = vm.isRepeating
 
+            view.questCheck.setOnCheckedChangeListener(null)
             view.questCheck.isChecked = vm.isSelected
+            view.questCheck.setOnCheckedChangeListener { _, isChecked ->
+                dispatch(QuestPickerAction.Check(vm.id, isChecked))
+            }
         }
 
         fun updateAll(viewModels: List<QuestViewModel>) {
@@ -146,7 +156,7 @@ class QuestPickerViewController(args: Bundle? = null) :
                         color = quest.color.androidColor.color500,
                         icon = quest.icon?.androidIcon?.icon ?: Ionicons.Icon.ion_android_clipboard,
                         isRepeating = false,
-                        isSelected = false
+                        isSelected = selectedQuests.contains(it.id)
                     )
                 }
                 is PickerQuest.Repeating -> {
@@ -157,7 +167,7 @@ class QuestPickerViewController(args: Bundle? = null) :
                         color = rq.color.androidColor.color500,
                         icon = rq.icon?.androidIcon?.icon ?: Ionicons.Icon.ion_android_clipboard,
                         isRepeating = true,
-                        isSelected = false
+                        isSelected = selectedQuests.contains(it.id)
                     )
                 }
             }
