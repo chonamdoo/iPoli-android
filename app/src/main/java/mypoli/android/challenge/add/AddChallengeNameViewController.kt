@@ -91,6 +91,13 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         when (state.type) {
             AddChallengeNameViewState.StateType.INITIAL -> {
                 colorLayout(view, state)
+                view.spinner.setPopupBackgroundResource(state.color.androidColor.color500)
+//                view.spinner.adapter = ArrayAdapter<String>(
+//                    view.context,
+//                    R.layout.item_add_challenge_difficulty_item,
+//                    R.id.spinnerItemId
+//                )
+//                view.spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
         }
     }
