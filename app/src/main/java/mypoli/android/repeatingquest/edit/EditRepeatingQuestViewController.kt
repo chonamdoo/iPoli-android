@@ -21,7 +21,7 @@ import mypoli.android.repeatingquest.edit.EditRepeatingQuestViewState.StateType.
 import mypoli.android.repeatingquest.edit.picker.RepeatingPatternPickerDialogController
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/26/18.
  */
 class EditRepeatingQuestViewController(args: Bundle? = null) :

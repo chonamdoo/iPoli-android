@@ -19,7 +19,7 @@ import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/7/18.
  */
 class QuestPickerViewController(args: Bundle? = null) :

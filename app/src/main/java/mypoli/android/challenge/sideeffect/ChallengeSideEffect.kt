@@ -12,7 +12,7 @@ import mypoli.android.repeatingquest.entity.RepeatingQuest
 import space.traversal.kapsule.required
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/7/18.
  */
 class ChallengeSideEffect : AppSideEffect() {

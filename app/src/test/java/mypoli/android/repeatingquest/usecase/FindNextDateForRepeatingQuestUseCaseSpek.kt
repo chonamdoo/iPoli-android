@@ -16,7 +16,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.temporal.TemporalAdjusters
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/25/18.
  */
 class FindNextDateForRepeatingQuestUseCaseSpek : Spek({

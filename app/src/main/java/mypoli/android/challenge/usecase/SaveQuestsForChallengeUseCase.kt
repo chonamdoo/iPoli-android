@@ -7,7 +7,7 @@ import mypoli.android.repeatingquest.entity.RepeatingQuest
 import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/8/18.
  */
 class SaveQuestsForChallengeUseCase(

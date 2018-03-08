@@ -10,7 +10,7 @@ import mypoli.android.repeatingquest.list.RepeatingQuestListViewState.StateType.
 import mypoli.android.repeatingquest.list.RepeatingQuestListViewState.StateType.LOADING
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/14/18.
  */
 sealed class RepeatingQuestListAction : Action {

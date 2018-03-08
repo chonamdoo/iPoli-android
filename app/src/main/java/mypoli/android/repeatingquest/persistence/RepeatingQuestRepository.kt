@@ -21,7 +21,7 @@ import org.threeten.bp.Month
 import kotlin.coroutines.experimental.CoroutineContext
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/16/18.
  */
 interface RepeatingQuestRepository : CollectionRepository<RepeatingQuest> {

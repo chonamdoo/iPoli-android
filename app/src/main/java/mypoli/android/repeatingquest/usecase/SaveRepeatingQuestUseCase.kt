@@ -13,7 +13,7 @@ import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
 import org.threeten.bp.LocalDate
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/23/18.
  */
 class SaveRepeatingQuestUseCase(

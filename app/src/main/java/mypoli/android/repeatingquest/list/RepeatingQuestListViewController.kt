@@ -28,7 +28,7 @@ import mypoli.android.repeatingquest.list.RepeatingQuestListViewState.StateType.
 import mypoli.android.repeatingquest.show.RepeatingQuestViewController
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 2/14/18.
  */
 class RepeatingQuestListViewController(args: Bundle? = null) :

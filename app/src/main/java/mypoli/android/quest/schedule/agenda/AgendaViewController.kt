@@ -29,7 +29,7 @@ import mypoli.android.quest.timer.TimerViewController
 import org.threeten.bp.LocalDate
 
 /**
- * Created by Polina Zhelyazkova <polina@ipoli.io>
+ * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 1/26/18.
  */
 class AgendaViewController(args: Bundle? = null) :
