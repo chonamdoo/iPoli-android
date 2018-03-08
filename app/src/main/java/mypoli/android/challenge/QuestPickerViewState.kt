@@ -13,7 +13,6 @@ import mypoli.android.quest.Quest
 import mypoli.android.repeatingquest.entity.RepeatingPattern
 import mypoli.android.repeatingquest.entity.RepeatingQuest
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@ipoli.io>
@@ -84,10 +83,13 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
 
             is QuestPickerAction.Filter -> {
                 val query = action.query.trim()
-                if (query.length < MIN_FILTER_QUERY_LEN) {
-                    subState
-                } else {
-                    subState.copy(
+                when {
+                    query.isEmpty() -> subState.copy(
+                        type = DATA_CHANGED,
+                        filteredQuests = subState.allQuests
+                    )
+                    query.length < MIN_FILTER_QUERY_LEN -> subState
+                    else -> subState.copy(
                         type = DATA_CHANGED,
                         filteredQuests = filterQuests(
                             query,
@@ -114,11 +116,12 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
     private fun filterQuests(
         query: String,
         quests: List<PickerQuest>
-    ): List<PickerQuest> {
-        return sortQuests(quests.filter {
-            Timber.d("AAA ${it.name}")
-            it.name.toLowerCase().contains(query.toLowerCase()) })
-    }
+    ) =
+        sortQuests(
+            quests.filter {
+                it.name.toLowerCase().contains(query.toLowerCase())
+            }
+        )
 
     private fun sortQuests(result: List<PickerQuest>): List<PickerQuest> {
         return result.sortedWith(Comparator { q1, q2 ->

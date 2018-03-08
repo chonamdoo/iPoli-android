@@ -17,6 +17,7 @@ import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewState.StateType.DATA_CHANGED
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@ipoli.io>
@@ -65,9 +66,13 @@ class QuestPickerViewController(args: Bundle? = null) :
         val searchItem = menu.findItem(R.id.actionSearch)
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String) = false
+            override fun onQueryTextSubmit(query: String) : Boolean {
+                Timber.d("AAAAA submit $query")
+                return false
+            }
 
             override fun onQueryTextChange(newText: String): Boolean {
+                Timber.d("AAAAA change $newText")
                 dispatch(QuestPickerAction.Filter(newText))
                 return true
             }
