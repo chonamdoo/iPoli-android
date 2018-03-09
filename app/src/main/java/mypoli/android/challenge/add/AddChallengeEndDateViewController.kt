@@ -1,18 +1,23 @@
 package mypoli.android.challenge.add
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import kotlinx.android.synthetic.main.controller_add_challenge_end_date.view.*
 import mypoli.android.R
+import mypoli.android.challenge.add.AddChallengeEndDateViewState.StateType.INITIAL
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.datetime.DateUtils
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
+import mypoli.android.common.view.stringRes
 import mypoli.android.quest.Color
 import org.threeten.bp.LocalDate
 
@@ -21,7 +26,9 @@ import org.threeten.bp.LocalDate
  * on 3/9/18.
  */
 
-sealed class AddChallengeEndDateAction : Action
+sealed class AddChallengeEndDateAction : Action {
+    data class SelectDate(val date: LocalDate) : AddChallengeEndDateAction()
+}
 
 object AddChallengeEndDateReducer : BaseViewStateReducer<AddChallengeEndDateViewState>() {
     override val stateKey = key<AddChallengeEndDateViewState>()
@@ -37,16 +44,14 @@ object AddChallengeEndDateReducer : BaseViewStateReducer<AddChallengeEndDateView
 
     override fun defaultState() =
         AddChallengeEndDateViewState(
-            type = AddChallengeEndDateViewState.StateType.INITIAL,
-            color = Color.GREEN,
-            endDate = LocalDate.now()
+            type = INITIAL,
+            color = Color.GREEN
         )
 }
 
 data class AddChallengeEndDateViewState(
     val type: AddChallengeEndDateViewState.StateType,
-    val color: Color,
-    val endDate: LocalDate
+    val color: Color
 ) : ViewState {
     enum class StateType {
         INITIAL,
@@ -73,20 +78,50 @@ class AddChallengeEndDateViewController(args: Bundle? = null) :
         return view
     }
 
+
     override fun render(state: AddChallengeEndDateViewState, view: View) {
+        when (state.type) {
+            INITIAL -> {
+                (view.dateList.adapter as DateAdapter).updateAll(state.viewModels)
+            }
+        }
     }
 
     data class DateViewModel(
         val text: String,
-        val date: LocalDate
+        val date: LocalDate?
     )
 
     inner class DateAdapter(private var viewModels: List<DateViewModel> = listOf()) :
         RecyclerView.Adapter<ViewHolder>() {
 
-
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val vm = viewModels[position]
+            val view = holder.itemView as TextView
+            view.text = vm.text
+            if (vm.date != null) {
+                view.dispatchOnClick(AddChallengeEndDateAction.SelectDate(vm.date))
+            } else {
+                view.setOnClickListener {
+                    val date = LocalDate.now()
+                    val datePickerDialog = DatePickerDialog(
+                        view.context, R.style.Theme_myPoli_AlertDialog,
+                        DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                            dispatch(
+                                AddChallengeEndDateAction.SelectDate(
+                                    LocalDate.of(
+                                        year,
+                                        month + 1,
+                                        dayOfMonth
+                                    )
+                                )
+                            )
+                        }, date.year, date.month.value - 1, date.dayOfMonth
+                    )
+                    datePickerDialog.datePicker.minDate = DateUtils.toMillis(date)
+                    datePickerDialog.show()
+                }
+            }
         }
 
         fun updateAll(viewModels: List<DateViewModel>) {
@@ -99,7 +134,7 @@ class AddChallengeEndDateViewController(args: Bundle? = null) :
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_repeating_pattern_month_day,
+                    R.layout.item_add_challenge_end_date,
                     parent,
                     false
                 )
@@ -108,4 +143,18 @@ class AddChallengeEndDateViewController(args: Bundle? = null) :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    private val AddChallengeEndDateViewState.viewModels: List<DateViewModel>
+        get() {
+            val today = LocalDate.now()
+            val viewModels = mutableListOf<DateViewModel>()
+            viewModels.add(DateViewModel(stringRes(R.string.one_month), today.plusMonths(1)))
+            viewModels.add(DateViewModel(stringRes(R.string.one_week), today.plusWeeks(1)))
+            viewModels.add(DateViewModel(stringRes(R.string.ten_days), today.plusDays(10)))
+            viewModels.add(DateViewModel(stringRes(R.string.two_weeks), today.plusWeeks(2)))
+            viewModels.add(DateViewModel(stringRes(R.string.three_months), today.plusMonths(3)))
+            viewModels.add(DateViewModel(stringRes(R.string.fifteen_days), today.plusDays(15)))
+            viewModels.add(DateViewModel(stringRes(R.string.exact_date), null))
+            return viewModels
+        }
 }

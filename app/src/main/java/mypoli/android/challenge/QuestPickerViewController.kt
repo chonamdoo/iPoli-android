@@ -59,7 +59,7 @@ class QuestPickerViewController(args: Bundle? = null) :
         super.onAttach(view)
         showBackButton()
     }
-    
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.quest_picker_menu, menu)

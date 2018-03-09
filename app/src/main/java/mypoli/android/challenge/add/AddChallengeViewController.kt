@@ -2,7 +2,6 @@ package mypoli.android.challenge.add
 
 import android.os.Bundle
 import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.*
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
@@ -18,7 +17,6 @@ import mypoli.android.common.view.colorRes
 import mypoli.android.common.view.setToolbar
 import mypoli.android.common.view.showBackButton
 import mypoli.android.common.view.toolbarTitle
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -39,19 +37,14 @@ class AddChallengeViewController(args: Bundle? = null) :
         setToolbar(view.toolbar)
         view.pager.isLocked = true
         view.pager.adapter = AddChallengePagerAdapter(this)
-        view.pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-
-            override fun onPageSelected(position: Int) {
-                Timber.d("AAA page selected $position")
-                toolbarTitle = when (position) {
-                    0 -> "New Challenge"
-                    1 -> "Thoughts to motivate you later"
-                    2 -> "Add some quests"
-                    else -> throw IllegalArgumentException("No controller for position $position")
-                }
-            }
-
-        })
+//        view.pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+//
+//            override fun onPageSelected(position: Int) {
+//                Timber.d("AAA page selected $position")
+//
+//            }
+//
+//        })
         return view
     }
 
@@ -61,8 +54,8 @@ class AddChallengeViewController(args: Bundle? = null) :
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.actionSearch)?.isVisible = view!!.pager.currentItem == 2
-        menu.findItem(R.id.actionSave)?.isVisible = view!!.pager.currentItem == 2
+        menu.findItem(R.id.actionSearch)?.isVisible = view!!.pager.currentItem == 3
+        menu.findItem(R.id.actionSave)?.isVisible = view!!.pager.currentItem == 3
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -83,6 +76,7 @@ class AddChallengeViewController(args: Bundle? = null) :
             CHANGE_PAGE -> {
                 activity!!.invalidateOptionsMenu()
                 view.pager.currentItem = state.adapterPosition
+                toolbarTitle = state.toolbarTitle
             }
 
             CLOSE -> {
@@ -117,13 +111,23 @@ class AddChallengeViewController(args: Bundle? = null) :
                 when (position) {
                     0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
                     1 -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
-                    2 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
+                    2 -> router.setRoot(RouterTransaction.with(AddChallengeEndDateViewController()))
+                    3 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
                 }
             }
         }
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
-        override fun getCount() = 3
+        override fun getCount() = 4
     }
+
+    private val AddChallengeViewState.toolbarTitle: String
+        get() = when (adapterPosition) {
+            0 -> "New Challenge"
+            1 -> "Thoughts to motivate you later"
+            2 -> "Achieve it in"
+            3 -> "Add some quests"
+            else -> throw IllegalArgumentException("No controller for position $adapterPosition")
+        }
 }
