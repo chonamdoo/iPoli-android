@@ -493,7 +493,6 @@ class DayViewController :
         val endTime: String,
         val icon: AndroidIcon?,
         val backgroundColor: AndroidColor,
-        @ColorRes val textColor: Int,
         val reminder: ReminderViewModel?,
         val isCompleted: Boolean,
         val isStarted: Boolean,
@@ -503,6 +502,16 @@ class DayViewController :
         val isRepeating: Boolean
             get() = repeatingQuestId != null && repeatingQuestId.isNotEmpty()
     }
+
+    data class EventViewModel(
+        override val id: String,
+        val name: String,
+        override val duration: Int,
+        override val startMinute: Int,
+        val startTime: String,
+        val endTime: String,
+        val backgroundColor: AndroidColor
+    ) : CalendarEvent
 
     inner class QuestScheduledEventsAdapter(
         context: Context,
@@ -850,7 +859,6 @@ class DayViewController :
                 endTime = q.endTime.toString(),
                 icon = q.icon?.androidIcon,
                 backgroundColor = color,
-                textColor = color.color900,
                 reminder = reminder,
                 isCompleted = q.isCompleted,
                 isStarted = q.isStarted,

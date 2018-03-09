@@ -34,7 +34,7 @@ sealed class DataLoadedAction : Action {
         val currentAgendaItemDate: LocalDate?
     ) : DataLoadedAction()
 
-    data class CalendarScheduledChanged(val schedule: Map<LocalDate, Schedule>) :
+    data class CalendarScheduleChanged(val schedule: Map<LocalDate, Schedule>) :
         DataLoadedAction()
 
     data class RepeatingQuestHistoryChanged(
@@ -69,7 +69,7 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
                 )
             }
 
-            is DataLoadedAction.CalendarScheduledChanged ->
+            is DataLoadedAction.CalendarScheduleChanged ->
                 subState.copy(
                     calendarSchedule = action.schedule
                 )

@@ -4,10 +4,7 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Instances
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.launch
 import mypoli.android.common.datetime.Time
 import mypoli.android.common.datetime.instant
 import mypoli.android.common.datetime.minutes
@@ -24,11 +21,11 @@ import java.util.*
  */
 
 interface EventRepository : CollectionRepository<Event> {
-    fun listenForScheduledBetween(
+    fun findScheduledBetween(
         calendarIds: Set<Int>,
         start: LocalDate,
         end: LocalDate
-    ): ReceiveChannel<List<Event>>
+    ): List<Event>
 }
 
 class AndroidCalendarEventRepository : EventRepository {
@@ -58,12 +55,11 @@ class AndroidCalendarEventRepository : EventRepository {
         private const val PROJECTION_TIME_ZONE_INDEX = 8
     }
 
-
-    override fun listenForScheduledBetween(
+    override fun findScheduledBetween(
         calendarIds: Set<Int>,
         start: LocalDate,
         end: LocalDate
-    ): ReceiveChannel<List<Event>> {
+    ): List<Event> {
 
         val beginTime = Calendar.getInstance()
         beginTime.set(start.year, start.monthValue - 1, start.dayOfMonth, 0, 0, 0)
@@ -92,12 +88,7 @@ class AndroidCalendarEventRepository : EventRepository {
             }
         }
 
-        val channel = Channel<List<Event>>()
-        launch(CommonPool) {
-            channel.send(events)
-        }
-
-        return channel
+        return events
     }
 
     private fun createEvent(cursor: Cursor): Event {

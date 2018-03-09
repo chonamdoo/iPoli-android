@@ -81,6 +81,7 @@ abstract class AppSideEffect : SideEffect<AppState>,
 class DayViewSideEffect : AppSideEffect() {
     private val saveQuestUseCase by required { saveQuestUseCase }
     private val questRepository by required { questRepository }
+    private val eventRepository by required { eventRepository }
     private val removeQuestUseCase by required { removeQuestUseCase }
     private val loadScheduleForDateUseCase by required { loadScheduleForDateUseCase }
     private val undoRemoveQuestUseCase by required { undoRemoveQuestUseCase }
@@ -156,15 +157,24 @@ class DayViewSideEffect : AppSideEffect() {
                             )
                         )
 
+//                    val events = eventRepository.findScheduledBetween(
+//                        calendarIds = setOf(3),
+//                        start = startDate!!,
+//                        end = endDate!!
+//                    )
+
+                    val events = listOf<Event>()
+
                     val schedule =
                         loadScheduleForDateUseCase.execute(
                             LoadScheduleForDateUseCase.Params(
                                 startDate = startDate!!,
                                 endDate = endDate!!,
-                                quests = it + placeholderQuests
+                                quests = it + placeholderQuests,
+                                events = events
                             )
                         )
-                    dispatch(DataLoadedAction.CalendarScheduledChanged(schedule))
+                    dispatch(DataLoadedAction.CalendarScheduleChanged(schedule))
                 }
             }
         }
@@ -533,7 +543,6 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private var todayQuestsChannel: ReceiveChannel<List<Quest>>? = null
     private var repeatingQuestsChannel: ReceiveChannel<List<RepeatingQuest>>? = null
     private var challengesChannel: ReceiveChannel<List<Challenge>>? = null
-    private var eventsChannel: ReceiveChannel<List<Event>>? = null
 
     override suspend fun doExecute(action: Action, state: AppState) {
 
@@ -558,23 +567,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
             listenForQuests(state)
             listenForRepeatingQuests()
             listenForChallenges()
-            listenForEvents()
         }
-    }
-
-    private suspend fun listenForEvents() {
-//        eventsChannel?.cancel()
-//        eventsChannel = eventRepository.listenForScheduledBetween(
-//            setOf(3),
-//            LocalDate.now().minusMonths(1),
-//            LocalDate.now()
-//        )
-//        eventsChannel!!.consumeEach {
-//            it.forEach {
-//                Timber.d("AAA ${it.duration.intValue} $it")
-//            }
-//            dispatch(DataLoadedAction.EventsChanged(it))
-//        }
     }
 
     private fun listenForChallenges() {
