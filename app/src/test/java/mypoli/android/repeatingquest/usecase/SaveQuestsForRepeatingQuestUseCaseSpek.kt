@@ -7,9 +7,9 @@ import mypoli.android.TestUtil
 import mypoli.android.TestUtil.firstDateOfWeek
 import mypoli.android.TestUtil.lastDateOfWeek
 import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.quest.data.persistence.QuestRepository
 import mypoli.android.repeatingquest.entity.RepeatingPattern
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
 import org.amshove.kluent.*
 import org.jetbrains.spek.api.Spek

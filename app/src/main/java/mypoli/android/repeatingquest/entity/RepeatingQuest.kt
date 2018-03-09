@@ -1,10 +1,7 @@
 package mypoli.android.repeatingquest.entity
 
 import mypoli.android.common.datetime.DateUtils
-import mypoli.android.common.datetime.Time
-import mypoli.android.quest.*
 import org.threeten.bp.DayOfWeek
-import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.Month
 import org.threeten.bp.temporal.TemporalAdjusters
@@ -217,41 +214,3 @@ val RepeatingPattern.repeatType: RepeatType
         is RepeatingPattern.Flexible.Monthly -> RepeatType.MONTHLY
         is RepeatingPattern.Yearly -> RepeatType.YEARLY
     }
-
-
-data class RepeatingQuest(
-    override val id: String = "",
-    val name: String,
-    val color: Color,
-    val icon: Icon? = null,
-    val category: Category,
-    val startTime: Time? = null,
-    val duration: Int,
-    val reminder: Reminder? = null,
-    val repeatingPattern: RepeatingPattern,
-    val nextDate: LocalDate? = null,
-    val periodProgress: PeriodProgress? = null,
-    val challengeId: String? = null,
-    override val createdAt: Instant = Instant.now(),
-    override val updatedAt: Instant = Instant.now()
-) : Entity {
-    val start
-        get() = repeatingPattern.start
-
-    val end
-        get() = repeatingPattern.end
-
-    val isCompleted
-        get() = if (end == null) false else LocalDate.now().isAfter(end)
-
-    val endTime: Time?
-        get() = startTime?.let {
-            startTime.plus(duration)
-        }
-
-    val isFlexible: Boolean
-        get() = repeatingPattern is RepeatingPattern.Flexible
-
-    val isFixed: Boolean
-        get() = !isFlexible
-}

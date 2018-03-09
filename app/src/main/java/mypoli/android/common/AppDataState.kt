@@ -6,9 +6,9 @@ import mypoli.android.common.redux.Reducer
 import mypoli.android.common.redux.State
 import mypoli.android.player.Player
 import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.quest.schedule.agenda.usecase.CreateAgendaItemsUseCase
 import mypoli.android.quest.usecase.Schedule
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import mypoli.android.repeatingquest.usecase.CreateRepeatingQuestHistoryUseCase
 import org.threeten.bp.LocalDate
 

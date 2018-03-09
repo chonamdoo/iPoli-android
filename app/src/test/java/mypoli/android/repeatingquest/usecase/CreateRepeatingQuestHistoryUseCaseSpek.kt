@@ -5,9 +5,9 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import mypoli.android.TestUtil
 import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.quest.data.persistence.QuestRepository
 import mypoli.android.repeatingquest.entity.RepeatingPattern
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
@@ -111,7 +111,10 @@ class CreateRepeatingQuestHistoryUseCaseSpek : Spek({
             }
             val result = executeUseCase(
                 questRepoMock, TestUtil.repeatingQuest.copy(
-                    repeatingPattern = RepeatingPattern.Weekly(setOf(DayOfWeek.MONDAY), date.minusDays(1))
+                    repeatingPattern = RepeatingPattern.Weekly(
+                        setOf(DayOfWeek.MONDAY),
+                        date.minusDays(1)
+                    )
                 ), date, date, date.minusDays(1)
             ).data
             result[date].`should equal`(CreateRepeatingQuestHistoryUseCase.DateHistory.EMPTY)

@@ -1,6 +1,5 @@
 package mypoli.android.challenge.sideeffect
 
-import mypoli.android.challenge.PickerQuest
 import mypoli.android.challenge.QuestPickerAction
 import mypoli.android.challenge.QuestPickerViewState
 import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
@@ -8,7 +7,7 @@ import mypoli.android.common.AppSideEffect
 import mypoli.android.common.AppState
 import mypoli.android.common.redux.Action
 import mypoli.android.quest.Quest
-import mypoli.android.repeatingquest.entity.RepeatingQuest
+import mypoli.android.quest.RepeatingQuest
 import space.traversal.kapsule.required
 
 /**
@@ -30,25 +29,16 @@ class ChallengeSideEffect : AppSideEffect() {
             is QuestPickerAction.Save -> {
                 val pickerState = state.stateFor(QuestPickerViewState::class.java)
                 val challengeId = pickerState.challengeId
-                val quests = mutableListOf<Quest>()
-                val repeatingQuests = mutableListOf<RepeatingQuest>()
-                pickerState.allQuests
-                    .filter {
-                        pickerState.selectedQuests.contains(
-                            it.id
-                        )
-                    }.forEach {
-                        when (it) {
-                            is PickerQuest.OneTime -> quests.add(it.quest)
-                            is PickerQuest.Repeating -> repeatingQuests.add(it.repeatingQuest)
-                        }
-                    }
+
+                val quests = pickerState.allQuests.map {
+                    it.baseQuest
+                }
 
                 saveQuestsForChallengeUseCase.execute(
                     SaveQuestsForChallengeUseCase.Params(
                         challengeId,
                         quests,
-                        repeatingQuests
+                        pickerState.selectedQuests
                     )
                 )
             }
