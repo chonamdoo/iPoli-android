@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.mikepenz.google_material_typeface_library.GoogleMaterial
+import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.typeface.IIcon
 import kotlinx.android.synthetic.main.controller_add_challenge_name.view.*
 import kotlinx.android.synthetic.main.view_no_elevation_toolbar.view.*
 import mypoli.android.R
-import mypoli.android.challenge.add.AddChallengeNameViewState.StateType.INITIAL
+import mypoli.android.challenge.add.AddChallengeNameViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
@@ -25,7 +29,11 @@ import mypoli.android.quest.Icon
  * on 3/8/18.
  */
 
-sealed class AddChallengeNameAction : Action
+sealed class AddChallengeNameAction : Action {
+    data class ChangeColor(val color: Color) : AddChallengeNameAction()
+    data class ChangeIcon(val icon: Icon?) : AddChallengeNameAction()
+    data class ChangeDifficulty(val position: Int) : AddChallengeNameAction()
+}
 
 object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>() {
 
@@ -36,8 +44,26 @@ object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>
         state: AppState,
         subState: AddChallengeNameViewState,
         action: Action
-    ): AddChallengeNameViewState {
-        return subState
+    ) =
+        when (action) {
+            is AddChallengeNameAction.ChangeColor ->
+                subState.copy(
+                    type = COLOR_CHANGED,
+                    color = action.color
+                )
+
+            is AddChallengeNameAction.ChangeIcon ->
+                subState.copy(
+                    type = ICON_CHANGED,
+                    icon = action.icon
+                )
+
+            is AddChallengeNameAction.ChangeDifficulty ->
+                subState.copy(
+                    type = DIFFICULTY_CHANGED,
+                    difficulty = Challenge.Difficulty.values()[action.position]
+                )
+            else -> subState
     }
 
     override fun defaultState() =
@@ -59,10 +85,12 @@ data class AddChallengeNameViewState(
     val difficulty: Challenge.Difficulty
 ) : ViewState {
     enum class StateType {
-        INITIAL
+        INITIAL,
+        COLOR_CHANGED,
+        ICON_CHANGED,
+        DIFFICULTY_CHANGED
     }
 }
-
 
 class AddChallengeNameViewController(args: Bundle? = null) :
     ReduxViewController<AddChallengeNameAction, AddChallengeNameViewState, AddChallengeNameReducer>(
@@ -99,15 +127,73 @@ class AddChallengeNameViewController(args: Bundle? = null) :
 
     override fun render(state: AddChallengeNameViewState, view: View) = when (state.type) {
         AddChallengeNameViewState.StateType.INITIAL -> {
-            colorLayout(view, state)
-            view.challengeColor.setOnClickListener {
-                ColorPickerDialogController({
+            renderColor(view, state)
+            renderIcon(view, state)
 
-                }, state.color.androidColor).showDialog(
-                    router,
-                    "pick_color_tag"
-                )
-            }
+            view.challengeDifficulty.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        dispatch(AddChallengeNameAction.ChangeDifficulty(position))
+                    }
+
+                }
+        }
+
+        COLOR_CHANGED -> {
+            renderColor(view, state)
+        }
+
+        ICON_CHANGED -> {
+            renderIcon(view, state)
+        }
+
+        DIFFICULTY_CHANGED -> {
+        }
+    }
+
+    private fun renderIcon(
+        view: View,
+        state: AddChallengeNameViewState
+    ) {
+        view.challengeIcon.setCompoundDrawablesWithIntrinsicBounds(
+            IconicsDrawable(view.context)
+                .icon(state.iicon)
+                .colorRes(R.color.md_white)
+                .sizeDp(24),
+            null, null, null
+        )
+
+        view.challengeIcon.setOnClickListener {
+            IconPickerDialogController({ icon ->
+                dispatch(AddChallengeNameAction.ChangeIcon(icon))
+            }, state.icon?.androidIcon).showDialog(
+                router,
+                "pick_icon_tag"
+            )
+
+        }
+    }
+
+    private fun renderColor(
+        view: View,
+        state: AddChallengeNameViewState
+    ) {
+        colorLayout(view, state)
+        view.challengeColor.setOnClickListener {
+            ColorPickerDialogController({
+                dispatch(AddChallengeNameAction.ChangeColor(it.color))
+            }, state.color.androidColor).showDialog(
+                router,
+                "pick_color_tag"
+            )
         }
     }
 
@@ -125,5 +211,8 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         view.challengeDifficulty.setPopupBackgroundResource(state.color.androidColor.color500)
 
     }
+
+    private val AddChallengeNameViewState.iicon: IIcon
+        get() = icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist
 
 }
