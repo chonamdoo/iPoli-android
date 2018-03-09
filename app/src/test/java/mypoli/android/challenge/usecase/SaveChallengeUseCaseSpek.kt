@@ -4,6 +4,7 @@ import mypoli.android.TestUtil
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
+import org.amshove.kluent.mock
 import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -21,7 +22,10 @@ class SaveChallengeUseCaseSpek : Spek({
         fun executeUseCase(
             params: SaveChallengeUseCase.Params
         ) =
-            SaveChallengeUseCase(TestUtil.challengeRepoMock()).execute(params)
+            SaveChallengeUseCase(
+                TestUtil.challengeRepoMock(),
+                mock<SaveQuestsForChallengeUseCase>()
+            ).execute(params)
 
         it("should not accept Challenge without name") {
             val exec =
@@ -32,7 +36,9 @@ class SaveChallengeUseCaseSpek : Spek({
                             color = Color.BLUE,
                             icon = Icon.STAR,
                             difficulty = Challenge.Difficulty.NORMAL,
-                            end = LocalDate.now()
+                            end = LocalDate.now(),
+                            allQuests = listOf(),
+                            selectedQuestIds = setOf()
                         )
                     )
                 }
