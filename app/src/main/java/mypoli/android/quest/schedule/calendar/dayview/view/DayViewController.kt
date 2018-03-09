@@ -36,13 +36,13 @@ import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
 import mypoli.android.quest.CompletedQuestViewController
 import mypoli.android.quest.Icon
+import mypoli.android.quest.reminder.picker.ReminderPickerDialogController
+import mypoli.android.quest.reminder.picker.ReminderViewModel
 import mypoli.android.quest.schedule.calendar.CalendarViewController
 import mypoli.android.quest.schedule.calendar.dayview.view.DayViewState.StateType.*
 import mypoli.android.quest.schedule.calendar.dayview.view.widget.*
-import mypoli.android.quest.toMinutesFromStart
-import mypoli.android.quest.reminder.picker.ReminderPickerDialogController
-import mypoli.android.quest.reminder.picker.ReminderViewModel
 import mypoli.android.quest.timer.TimerViewController
+import mypoli.android.quest.toMinutesFromStart
 import org.threeten.bp.LocalDate
 import java.util.*
 
@@ -473,11 +473,8 @@ class DayViewController :
     }
 
     private fun showColorPicker(selectedColor: AndroidColor?) {
-        ColorPickerDialogController(object : ColorPickerDialogController.ColorPickedListener {
-            override fun onColorPicked(color: AndroidColor) {
-                dispatch(DayViewAction.ColorPicked(color.color))
-            }
-
+        ColorPickerDialogController({
+            dispatch(DayViewAction.ColorPicked(it.color))
         }, selectedColor)
             .showDialog(router, "pick_color_tag")
     }

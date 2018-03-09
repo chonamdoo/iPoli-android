@@ -178,12 +178,8 @@ class EditRepeatingQuestViewController(args: Bundle? = null) :
     private fun renderColor(view: View, state: EditRepeatingQuestViewState) {
         colorLayout(view, state)
         view.questColorContainer.setOnClickListener {
-            ColorPickerDialogController(object :
-                ColorPickerDialogController.ColorPickedListener {
-                override fun onColorPicked(color: AndroidColor) {
-                    dispatch(EditRepeatingQuestAction.ChangeColor(color.color))
-                }
-
+            ColorPickerDialogController({
+                dispatch(EditRepeatingQuestAction.ChangeColor(it.color))
             }, state.color.androidColor).showDialog(
                 router,
                 "pick_color_tag"

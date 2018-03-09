@@ -51,7 +51,8 @@
             android:drawablePadding="16dp"
             android:drawableStart="@drawable/ic_color_palette_white_24dp"
             android:gravity="start|center_vertical"
-            android:text="Color"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/color"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/md_white"
             app:layout_constraintEnd_toEndOf="@+id/challengeName"
@@ -67,7 +68,8 @@
             android:drawablePadding="16dp"
             android:drawableStart="@drawable/ic_icon_white_24dp"
             android:gravity="start|center_vertical"
-            android:text="Icon"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/icon"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@color/md_white"
             app:layout_constraintEnd_toEndOf="@+id/challengeName"
@@ -76,25 +78,42 @@
             app:layout_constraintTop_toBottomOf="@+id/challengeColor" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/challengeDifficulty"
             style="@style/Widget.AppCompat.Spinner.DropDown"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:entries="@array/difficulties"
             android:popupBackground="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-            app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="@+id/imageView4" />
+            app:layout_constraintBottom_toBottomOf="@+id/difficultyIcon"
+            app:layout_constraintStart_toEndOf="@+id/difficultyIcon"
+            app:layout_constraintTop_toTopOf="@+id/difficultyIcon" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/difficultyIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             app:layout_constraintStart_toStartOf="@+id/challengeName"
             app:layout_constraintTop_toBottomOf="@+id/challengeIcon"
             app:srcCompat="@drawable/ic_dumbbell_white_24dp" />
+
+        <Button
+            android:id="@+id/challengeNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bordered_rectangle_white_background"
+            android:text="@string/next"
+            android:foreground="?attr/selectableItemBackground"
+            android:textColor="@color/md_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/challengeDifficulty" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>

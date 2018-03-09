@@ -16,10 +16,7 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
-import mypoli.android.common.view.colorRes
-import mypoli.android.common.view.setToolbar
-import mypoli.android.common.view.showBackButton
-import mypoli.android.common.view.toolbarTitle
+import mypoli.android.common.view.*
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
 
@@ -82,11 +79,11 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         setToolbar(view.toolbar)
         toolbarTitle = "New challenge"
 
-        view.spinner.background.setColorFilter(
+        view.challengeDifficulty.background.setColorFilter(
             colorRes(R.color.md_white),
             PorterDuff.Mode.SRC_ATOP
         )
-        view.spinner.adapter = ArrayAdapter<String>(
+        view.challengeDifficulty.adapter = ArrayAdapter<String>(
             view.context,
             R.layout.item_add_challenge_difficulty_item,
             R.id.spinnerItemId,
@@ -103,6 +100,14 @@ class AddChallengeNameViewController(args: Bundle? = null) :
     override fun render(state: AddChallengeNameViewState, view: View) = when (state.type) {
         AddChallengeNameViewState.StateType.INITIAL -> {
             colorLayout(view, state)
+            view.challengeColor.setOnClickListener {
+                ColorPickerDialogController({
+
+                }, state.color.androidColor).showDialog(
+                    router,
+                    "pick_color_tag"
+                )
+            }
         }
     }
 
@@ -117,7 +122,7 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         view.rootContainer.setBackgroundColor(color500)
         activity?.window?.navigationBarColor = color500
         activity?.window?.statusBarColor = color700
-        view.spinner.setPopupBackgroundResource(state.color.androidColor.color500)
+        view.challengeDifficulty.setPopupBackgroundResource(state.color.androidColor.color500)
 
     }
 
