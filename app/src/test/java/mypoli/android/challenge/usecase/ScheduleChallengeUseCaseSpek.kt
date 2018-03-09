@@ -40,12 +40,14 @@ class ScheduleChallengeUseCaseSpek : Spek({
 
         it("should not accept Challenge without Quests") {
             val exec =
-                { executeUseCase(
-                    PredefinedChallengeData(
-                        PredefinedChallengeData.Category.HEALTH_AND_FITNESS,
-                        listOf()
+                {
+                    executeUseCase(
+                        PredefinedChallengeData(
+                            PredefinedChallengeData.Category.HEALTH_AND_FITNESS,
+                            listOf()
+                        )
                     )
-                ) }
+                }
             exec shouldThrow IllegalArgumentException::class
         }
 
