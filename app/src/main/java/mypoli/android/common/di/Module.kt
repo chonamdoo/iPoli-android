@@ -26,6 +26,8 @@ import mypoli.android.common.view.ColorPickerPresenter
 import mypoli.android.common.view.CurrencyConverterPresenter
 import mypoli.android.common.view.IconPickerDialogPresenter
 import mypoli.android.common.view.PetMessagePresenter
+import mypoli.android.event.persistence.AndroidCalendarEventRepository
+import mypoli.android.event.persistence.EventRepository
 import mypoli.android.pet.AndroidJobLowerPetStatsScheduler
 import mypoli.android.pet.LowerPetStatsScheduler
 import mypoli.android.pet.PetDialogPresenter
@@ -82,6 +84,7 @@ interface RepositoryModule {
     val playerRepository: PlayerRepository
     val repeatingQuestRepository: RepeatingQuestRepository
     val challengeRepository: ChallengeRepository
+    val eventRepository: EventRepository
 }
 
 class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
@@ -118,6 +121,10 @@ class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
             job + CommonPool,
             sharedPreferences
         )
+    }
+
+    override val eventRepository by required {
+        AndroidCalendarEventRepository()
     }
 
 }

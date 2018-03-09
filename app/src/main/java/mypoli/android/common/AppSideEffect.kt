@@ -17,6 +17,7 @@ import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.Dispatcher
 import mypoli.android.common.redux.SideEffect
 import mypoli.android.common.view.AppWidgetUtil
+import mypoli.android.event.Event
 import mypoli.android.myPoliApp
 import mypoli.android.pet.store.PetStoreAction
 import mypoli.android.pet.usecase.BuyPetUseCase
@@ -523,6 +524,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private val playerRepository by required { playerRepository }
     private val questRepository by required { questRepository }
     private val challengeRepository by required { challengeRepository }
+    private val eventRepository by required { eventRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val findNextDateForRepeatingQuestUseCase by required { findNextDateForRepeatingQuestUseCase }
     private val findPeriodProgressForRepeatingQuestUseCase by required { findPeriodProgressForRepeatingQuestUseCase }
@@ -531,6 +533,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private var todayQuestsChannel: ReceiveChannel<List<Quest>>? = null
     private var repeatingQuestsChannel: ReceiveChannel<List<RepeatingQuest>>? = null
     private var challengesChannel: ReceiveChannel<List<Challenge>>? = null
+    private var eventsChannel: ReceiveChannel<List<Event>>? = null
 
     override suspend fun doExecute(action: Action, state: AppState) {
 
@@ -555,7 +558,20 @@ class LoadAllDataSideEffect : AppSideEffect() {
             listenForQuests(state)
             listenForRepeatingQuests()
             listenForChallenges()
+            listenForEvents()
         }
+    }
+
+    private suspend fun listenForEvents() {
+//        eventsChannel?.cancel()
+//        eventsChannel = eventRepository.listenForScheduledBetween(
+//            setOf(3),
+//            LocalDate.now().minusMonths(1),
+//            LocalDate.now()
+//        )
+//        eventsChannel!!.consumeEach {
+//            dispatch(DataLoadedAction.EventsChanged(it))
+//        }
     }
 
     private fun listenForChallenges() {
