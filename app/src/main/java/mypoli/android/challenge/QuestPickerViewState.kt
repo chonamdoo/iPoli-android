@@ -19,7 +19,7 @@ import org.threeten.bp.LocalDate
  */
 
 sealed class QuestPickerAction : Action {
-    data class Load(val challengeId: String) : QuestPickerAction()
+    data class Load(val challengeId: String?) : QuestPickerAction()
     data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) : QuestPickerAction()
     data class Filter(val query: String) : QuestPickerAction()
     data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()

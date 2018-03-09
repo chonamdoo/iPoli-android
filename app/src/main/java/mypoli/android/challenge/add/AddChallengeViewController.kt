@@ -29,7 +29,7 @@ class AddChallengeViewController(args: Bundle? = null) :
         savedViewState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.controller_add_challenge, container, false)
-        view.pager.isLocked = true
+//        view.pager.isLocked = true
         view.pager.adapter = AddChallengePagerAdapter(this)
 
         return view
@@ -37,7 +37,7 @@ class AddChallengeViewController(args: Bundle? = null) :
 
     override fun render(state: AddChallengeViewState, view: View) {
         when(state.type) {
-            AddChallengeViewState.StateType.SHOW_NEXT_PAGE -> {
+            AddChallengeViewState.StateType.CHANGE_PAGE -> {
                 view.pager.currentItem = state.adapterPosition
             }
         }
