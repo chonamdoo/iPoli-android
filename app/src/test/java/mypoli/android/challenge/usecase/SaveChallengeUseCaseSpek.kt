@@ -19,18 +19,13 @@ class SaveChallengeUseCaseSpek : Spek({
 
     describe("SaveChallengeUseCase") {
 
-        fun executeUseCase(
-            params: SaveChallengeUseCase.Params
-        ) =
-            SaveChallengeUseCase(
-                TestUtil.challengeRepoMock(),
-                mock<SaveQuestsForChallengeUseCase>()
-            ).execute(params)
-
         it("should not accept Challenge without name") {
             val exec =
                 {
-                    executeUseCase(
+                    SaveChallengeUseCase(
+                        TestUtil.challengeRepoMock(),
+                        mock()
+                    ).execute(
                         SaveChallengeUseCase.Params(
                             name = "",
                             color = Color.BLUE,
