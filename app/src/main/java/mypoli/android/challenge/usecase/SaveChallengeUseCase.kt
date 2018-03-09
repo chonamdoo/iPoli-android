@@ -22,6 +22,29 @@ class SaveChallengeUseCase(
 
         require(parameters.name.isNotEmpty())
 
+        return if (parameters.id.isNotEmpty()) {
+            updateChallenge(parameters)
+        } else {
+            saveNewChallenge(parameters)
+        }
+    }
+
+    private fun updateChallenge(parameters: Params): Challenge {
+        val c = challengeRepository.findById(parameters.id)
+        require(c != null)
+
+        return challengeRepository.save(
+            c!!.copy(
+                name = parameters.name,
+                color = parameters.color,
+                icon = parameters.icon,
+                difficulty = parameters.difficulty,
+                end = parameters.end
+            )
+        )
+    }
+
+    private fun saveNewChallenge(parameters: Params): Challenge {
         val c = challengeRepository.save(
             Challenge(
                 name = parameters.name,
@@ -44,6 +67,7 @@ class SaveChallengeUseCase(
     }
 
     data class Params(
+        val id: String = "",
         val name: String,
         val color: Color,
         val icon: Icon,
