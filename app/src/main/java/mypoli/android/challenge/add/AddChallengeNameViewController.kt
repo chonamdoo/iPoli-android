@@ -3,6 +3,7 @@ package mypoli.android.challenge.add
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -23,6 +24,7 @@ import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -30,10 +32,12 @@ import mypoli.android.quest.Icon
  */
 
 sealed class AddChallengeNameAction : Action {
+    object Load : AddChallengeNameAction()
     data class ChangeColor(val color: Color) : AddChallengeNameAction()
     data class ChangeIcon(val icon: Icon?) : AddChallengeNameAction()
     data class ChangeDifficulty(val position: Int) : AddChallengeNameAction()
     data class Next(val name: String) : AddChallengeNameAction()
+    object Back : AddChallengeNameAction()
 }
 
 object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>() {
@@ -47,6 +51,17 @@ object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>
         action: Action
     ) =
         when (action) {
+            AddChallengeNameAction.Load -> {
+                val parentState = state.stateFor(AddChallengeViewState::class.java)
+                subState.copy(
+                    type = DATA_LOADED,
+                    name = parentState.name,
+                    color = parentState.color,
+                    icon = parentState.icon,
+                    difficulty = parentState.difficulty
+                )
+            }
+
             is AddChallengeNameAction.ChangeColor ->
                 subState.copy(
                     type = COLOR_CHANGED,
@@ -87,6 +102,7 @@ data class AddChallengeNameViewState(
 ) : ViewState {
     enum class StateType {
         INITIAL,
+        DATA_LOADED,
         COLOR_CHANGED,
         ICON_CHANGED,
         DIFFICULTY_CHANGED
@@ -104,6 +120,7 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.controller_add_challenge_name, container, false)
         setToolbar(view.toolbar)
         toolbarTitle = "New challenge"
@@ -121,44 +138,61 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         return view
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        showBackButton()
+    override fun onCreateLoadAction(): AddChallengeNameAction? {
+        return AddChallengeNameAction.Load
     }
 
-    override fun render(state: AddChallengeNameViewState, view: View) = when (state.type) {
-        AddChallengeNameViewState.StateType.INITIAL -> {
-            renderColor(view, state)
-            renderIcon(view, state)
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+//        showBackButton()
+    }
 
-            view.challengeDifficulty.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Timber.d("AAAA name")
+//        if (item.itemId == android.R.id.home) {
+//            dispatch(AddChallengeNameAction.Back)
+//            return true
+//        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun render(state: AddChallengeNameViewState, view: View) {
+        when (state.type) {
+            DATA_LOADED -> {
+                renderColor(view, state)
+                renderIcon(view, state)
+
+                view.challengeDifficulty.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
+
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            dispatch(AddChallengeNameAction.ChangeDifficulty(position))
+                        }
+
                     }
 
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        dispatch(AddChallengeNameAction.ChangeDifficulty(position))
-                    }
-
+                view.challengeNext.setOnClickListener {
+                    dispatch(AddChallengeNameAction.Next(view.challengeName.text.toString()))
                 }
-            
-            view.challengeNext.dispatchOnClick(AddChallengeNameAction.Next(view.challengeName.text.toString()))
-        }
+            }
 
-        COLOR_CHANGED -> {
-            renderColor(view, state)
-        }
+            COLOR_CHANGED -> {
+                renderColor(view, state)
+            }
 
-        ICON_CHANGED -> {
-            renderIcon(view, state)
-        }
+            ICON_CHANGED -> {
+                renderIcon(view, state)
+            }
 
-        DIFFICULTY_CHANGED -> {
+            DIFFICULTY_CHANGED -> {
+            }
         }
     }
 

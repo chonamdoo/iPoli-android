@@ -1,8 +1,7 @@
 package mypoli.android.challenge.add
 
 import mypoli.android.challenge.PickerQuest
-import mypoli.android.challenge.add.AddChallengeViewState.StateType.CHANGE_PAGE
-import mypoli.android.challenge.add.AddChallengeViewState.StateType.LOADING
+import mypoli.android.challenge.add.AddChallengeViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
@@ -54,6 +53,11 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                     adapterPosition = subState.adapterPosition - 1
                 )
 
+            AddChallengeNameAction.Back ->
+                subState.copy(
+                    type = CLOSE
+                )
+
             else -> subState
     }
 
@@ -86,6 +90,7 @@ data class AddChallengeViewState(
     enum class StateType {
         LOADING,
         DATA_CHANGED,
-        CHANGE_PAGE
+        CHANGE_PAGE,
+        CLOSE
     }
 }
