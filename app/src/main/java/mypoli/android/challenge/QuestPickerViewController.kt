@@ -27,7 +27,7 @@ class QuestPickerViewController(args: Bundle? = null) :
 
     override val reducer = QuestPickerReducer
 
-    private lateinit var challengeId: String
+    private var challengeId: String? = null
 
     constructor(
         challengeId: String
