@@ -56,6 +56,14 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                     motivationList = action.motivationList
                 )
 
+            is AddChallengeEndDateAction.SelectDate -> {
+                subState.copy(
+                    type = CHANGE_PAGE,
+                    adapterPosition = subState.adapterPosition + 1,
+                    end = action.date
+                )
+            }
+
             AddChallengeAction.Back -> {
                 val adapterPosition = subState.adapterPosition - 1
                 if (adapterPosition < 0) {

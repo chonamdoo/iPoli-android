@@ -119,7 +119,7 @@ class AddChallengeViewController(args: Bundle? = null) :
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
-        override fun getCount() = 3
+        override fun getCount() = 4
     }
 
     private val AddChallengeViewState.toolbarTitle: String
