@@ -1,9 +1,11 @@
 package mypoli.android.challenge.add
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.controller_add_challenge_name.view.*
 import kotlinx.android.synthetic.main.view_no_elevation_toolbar.view.*
 import mypoli.android.R
@@ -79,6 +81,17 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         val view = inflater.inflate(R.layout.controller_add_challenge_name, container, false)
         setToolbar(view.toolbar)
         toolbarTitle = "New challenge"
+
+        view.spinner.background.setColorFilter(
+            colorRes(R.color.md_white),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        view.spinner.adapter = ArrayAdapter<String>(
+            view.context,
+            R.layout.item_add_challenge_difficulty_item,
+            R.id.spinnerItemId,
+            view.resources.getStringArray(R.array.difficulties)
+        )
         return view
     }
 
@@ -87,18 +100,9 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         showBackButton()
     }
 
-    override fun render(state: AddChallengeNameViewState, view: View) {
-        when (state.type) {
-            AddChallengeNameViewState.StateType.INITIAL -> {
-                colorLayout(view, state)
-                view.spinner.setPopupBackgroundResource(state.color.androidColor.color500)
-//                view.spinner.adapter = ArrayAdapter<String>(
-//                    view.context,
-//                    R.layout.item_add_challenge_difficulty_item,
-//                    R.id.spinnerItemId
-//                )
-//                view.spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            }
+    override fun render(state: AddChallengeNameViewState, view: View) = when (state.type) {
+        AddChallengeNameViewState.StateType.INITIAL -> {
+            colorLayout(view, state)
         }
     }
 
@@ -113,6 +117,8 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         view.rootContainer.setBackgroundColor(color500)
         activity?.window?.navigationBarColor = color500
         activity?.window?.statusBarColor = color700
+        view.spinner.setPopupBackgroundResource(state.color.androidColor.color500)
+
     }
 
 }
