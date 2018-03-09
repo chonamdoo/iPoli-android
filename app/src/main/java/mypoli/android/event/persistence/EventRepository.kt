@@ -1,6 +1,7 @@
 package mypoli.android.event.persistence
 
 import android.content.ContentUris
+import android.database.Cursor
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Instances
 import kotlinx.coroutines.experimental.CommonPool
@@ -88,16 +89,7 @@ class AndroidCalendarEventRepository : EventRepository {
             null
         ).use {
             while (it.moveToNext()) {
-                val eventStartTime = Time.of(it.getInt(PROJECTION_START_MIN_INDEX))
-                val eventEndTime = Time.of(it.getInt(PROJECTION_END_MIN_INDEX))
-                events.add(
-                    Event(
-                        id = it.getString(PROJECTION_ID_INDEX),
-                        name = it.getString(PROJECTION_TITLE_INDEX),
-                        start = eventStartTime,
-                        duration = (eventEndTime - eventStartTime).toMinuteOfDay().minutes
-                    )
-                )
+                events.add(createEvent(it))
             }
         }
 
@@ -107,6 +99,17 @@ class AndroidCalendarEventRepository : EventRepository {
         }
 
         return channel
+    }
+
+    private fun createEvent(cursor: Cursor): Event {
+        val eventStartTime = Time.of(cursor.getInt(PROJECTION_START_MIN_INDEX))
+        val eventEndTime = Time.of(cursor.getInt(PROJECTION_END_MIN_INDEX))
+        return Event(
+            id = cursor.getString(PROJECTION_ID_INDEX),
+            name = cursor.getString(PROJECTION_TITLE_INDEX),
+            start = eventStartTime,
+            duration = (eventEndTime - eventStartTime).toMinuteOfDay().minutes
+        )
     }
 
     override fun save(entity: Event): Event {
