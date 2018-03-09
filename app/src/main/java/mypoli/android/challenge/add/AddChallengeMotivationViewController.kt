@@ -20,6 +20,7 @@ import mypoli.android.common.view.setToolbar
 import mypoli.android.common.view.showBackButton
 import mypoli.android.common.view.toolbarTitle
 import mypoli.android.quest.Color
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -43,9 +44,14 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
     ): AddChallengeMotivationViewState {
         return when (action) {
             AddChallengeMotivationAction.Load -> {
+                val parentState = state.stateFor(AddChallengeViewState::class.java)
+                val motivationList = parentState.motivationList
                 subState.copy(
                     type = DATA_LOADED,
-                    color = state.stateFor(AddChallengeViewState::class.java).color
+                    motivation1 = if (motivationList.isNotEmpty()) motivationList[0] else "",
+                    motivation2 = if (motivationList.size > 1) motivationList[1] else "",
+                    motivation3 = if (motivationList.size > 2) motivationList[2] else "",
+                    color = parentState.color
                 )
             }
             else -> subState
@@ -55,13 +61,19 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
     override fun defaultState() =
         AddChallengeMotivationViewState(
             type = INITIAL,
-            color = Color.GREEN
+            color = Color.GREEN,
+            motivation1 = "",
+            motivation2 = "",
+            motivation3 = ""
         )
 
 }
 
 data class AddChallengeMotivationViewState(
     val type: AddChallengeMotivationViewState.StateType,
+    val motivation1: String,
+    val motivation2: String,
+    val motivation3: String,
     val color: Color
 ) : ViewState {
     enum class StateType {
@@ -97,6 +109,7 @@ class AddChallengeMotivationViewController(args: Bundle? = null) :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Timber.d("AAAA motivation")
         if (item.itemId == android.R.id.home) {
             dispatch(AddChallengeMotivationAction.Back)
             return true
@@ -121,6 +134,9 @@ class AddChallengeMotivationViewController(args: Bundle? = null) :
             }
             DATA_LOADED -> {
                 colorLayout(view, state)
+                view.motivation1.setText(state.motivation1)
+                view.motivation2.setText(state.motivation2)
+                view.motivation3.setText(state.motivation3)
             }
         }
     }

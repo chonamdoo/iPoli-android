@@ -40,6 +40,10 @@ class AddChallengeViewController(args: Bundle? = null) :
             AddChallengeViewState.StateType.CHANGE_PAGE -> {
                 view.pager.currentItem = state.adapterPosition
             }
+
+            AddChallengeViewState.StateType.CLOSE -> {
+                router.popController(this)
+            }
         }
     }
 
