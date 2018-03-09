@@ -1,9 +1,9 @@
 package mypoli.android.repeatingquest.usecase
 
 import mypoli.android.common.UseCase
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.quest.data.persistence.QuestRepository
 import mypoli.android.repeatingquest.entity.PeriodProgress
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import org.threeten.bp.LocalDate
 
 /**

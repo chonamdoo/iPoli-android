@@ -8,13 +8,9 @@ import mypoli.android.common.datetime.startOfDayUTC
 import mypoli.android.common.persistence.BaseCollectionFirestoreRepository
 import mypoli.android.common.persistence.CollectionRepository
 import mypoli.android.common.persistence.FirestoreModel
-import mypoli.android.quest.Category
-import mypoli.android.quest.Color
-import mypoli.android.quest.Icon
-import mypoli.android.quest.Reminder
+import mypoli.android.quest.*
 import mypoli.android.quest.data.persistence.DbReminder
 import mypoli.android.repeatingquest.entity.RepeatingPattern
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.Month

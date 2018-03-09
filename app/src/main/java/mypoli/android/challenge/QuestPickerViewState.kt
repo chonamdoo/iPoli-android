@@ -5,12 +5,8 @@ import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
-import mypoli.android.quest.Category
-import mypoli.android.quest.Color
-import mypoli.android.quest.Icon
-import mypoli.android.quest.Quest
+import mypoli.android.quest.*
 import mypoli.android.repeatingquest.entity.RepeatingPattern
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import org.threeten.bp.LocalDate
 
 /**
@@ -20,7 +16,9 @@ import org.threeten.bp.LocalDate
 
 sealed class QuestPickerAction : Action {
     data class Load(val challengeId: String) : QuestPickerAction()
-    data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) : QuestPickerAction()
+    data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) :
+        QuestPickerAction()
+
     data class Filter(val query: String) : QuestPickerAction()
     data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()
     object Save : QuestPickerAction()
@@ -172,10 +170,22 @@ object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
 
 }
 
-sealed class PickerQuest(open val id: String, open val name: String, open val date: LocalDate?) {
-    data class OneTime(val quest: Quest) : PickerQuest(quest.id, quest.name, quest.scheduledDate)
+sealed class PickerQuest(
+    open val baseQuest: BaseQuest,
+    open val id: String,
+    open val name: String,
+    open val date: LocalDate?
+) {
+    data class OneTime(val quest: Quest) :
+        PickerQuest(quest, quest.id, quest.name, quest.scheduledDate)
+
     data class Repeating(val repeatingQuest: RepeatingQuest) :
-        PickerQuest(repeatingQuest.id, repeatingQuest.name, repeatingQuest.repeatingPattern.start)
+        PickerQuest(
+            repeatingQuest,
+            repeatingQuest.id,
+            repeatingQuest.name,
+            repeatingQuest.repeatingPattern.start
+        )
 }
 
 data class QuestPickerViewState(

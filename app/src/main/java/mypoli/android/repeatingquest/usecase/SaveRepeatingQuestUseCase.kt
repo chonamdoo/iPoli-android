@@ -2,13 +2,9 @@ package mypoli.android.repeatingquest.usecase
 
 import mypoli.android.common.UseCase
 import mypoli.android.common.datetime.Time
-import mypoli.android.quest.Category
-import mypoli.android.quest.Color
-import mypoli.android.quest.Icon
-import mypoli.android.quest.Reminder
+import mypoli.android.quest.*
 import mypoli.android.quest.data.persistence.QuestRepository
 import mypoli.android.repeatingquest.entity.RepeatingPattern
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
 import org.threeten.bp.LocalDate
 

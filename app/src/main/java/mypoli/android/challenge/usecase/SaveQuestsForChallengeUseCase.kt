@@ -1,9 +1,10 @@
 package mypoli.android.challenge.usecase
 
 import mypoli.android.common.UseCase
+import mypoli.android.quest.BaseQuest
 import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.quest.data.persistence.QuestRepository
-import mypoli.android.repeatingquest.entity.RepeatingQuest
 import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
 
 /**
@@ -16,19 +17,32 @@ class SaveQuestsForChallengeUseCase(
 ) : UseCase<SaveQuestsForChallengeUseCase.Params, Unit> {
 
     override fun execute(parameters: SaveQuestsForChallengeUseCase.Params) {
+
         val challengeId = parameters.challengeId
-        parameters.quests.forEach {
-            questRepository.save(it.copy(challengeId = challengeId))
+
+        val allQuests = parameters.allQuests
+
+        val (quests, repeatingQuests) = allQuests
+            .filter {
+                parameters.selectedQuestIds.contains(
+                    it.id
+                )
+            }.partition {
+                it is Quest
+            }
+
+        quests.forEach {
+            questRepository.save((it as Quest).copy(challengeId = challengeId))
         }
-        parameters.repeatingQuests.forEach {
-            repeatingQuestRepository.save(it.copy(challengeId = challengeId))
+        repeatingQuests.forEach {
+            repeatingQuestRepository.save((it as RepeatingQuest).copy(challengeId = challengeId))
         }
     }
 
     data class Params(
         val challengeId: String,
-        val quests: List<Quest>,
-        val repeatingQuests: List<RepeatingQuest>
+        val allQuests: List<BaseQuest>,
+        val selectedQuestIds: Set<String>
     )
 
 }
