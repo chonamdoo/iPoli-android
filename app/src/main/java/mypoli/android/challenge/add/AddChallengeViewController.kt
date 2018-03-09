@@ -2,17 +2,23 @@ package mypoli.android.challenge.add
 
 import android.os.Bundle
 import android.support.v4.view.PagerAdapter
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v4.view.ViewPager
+import android.view.*
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import kotlinx.android.synthetic.main.controller_add_challenge.view.*
+import kotlinx.android.synthetic.main.view_no_elevation_toolbar.view.*
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
+import mypoli.android.challenge.add.AddChallengeViewState.StateType.*
 import mypoli.android.common.redux.android.ReduxViewController
+import mypoli.android.common.view.colorRes
+import mypoli.android.common.view.setToolbar
+import mypoli.android.common.view.showBackButton
+import mypoli.android.common.view.toolbarTitle
+import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -28,23 +34,78 @@ class AddChallengeViewController(args: Bundle? = null) :
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.controller_add_challenge, container, false)
-//        view.pager.isLocked = true
+        setToolbar(view.toolbar)
+        view.pager.isLocked = true
         view.pager.adapter = AddChallengePagerAdapter(this)
+        view.pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
 
+            override fun onPageSelected(position: Int) {
+                Timber.d("AAA page selected $position")
+                toolbarTitle = when (position) {
+                    0 -> "New Challenge"
+                    1 -> "Thoughts to motivate you later"
+                    2 -> "Add some quests"
+                    else -> throw IllegalArgumentException("No controller for position $position")
+                }
+            }
+
+        })
         return view
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        showBackButton()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.findItem(R.id.actionSearch)?.isVisible = view!!.pager.currentItem == 2
+        menu.findItem(R.id.actionSave)?.isVisible = view!!.pager.currentItem == 2
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            dispatch(AddChallengeAction.Back)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun render(state: AddChallengeViewState, view: View) {
         when(state.type) {
-            AddChallengeViewState.StateType.CHANGE_PAGE -> {
+            INITIAL -> {
+                toolbarTitle = "New Challenge"
+                colorLayout(view, state)
+            }
+            CHANGE_PAGE -> {
+                activity!!.invalidateOptionsMenu()
                 view.pager.currentItem = state.adapterPosition
             }
 
-            AddChallengeViewState.StateType.CLOSE -> {
+            CLOSE -> {
                 router.popController(this)
             }
+
+            COLOR_CHANGED -> {
+                colorLayout(view, state)
+            }
         }
+    }
+
+    private fun colorLayout(
+        view: View,
+        state: AddChallengeViewState
+    ) {
+        val color500 = colorRes(state.color.androidColor.color500)
+        val color700 = colorRes(state.color.androidColor.color700)
+        view.appbar.setBackgroundColor(color500)
+        view.toolbar.setBackgroundColor(color500)
+        view.rootContainer.setBackgroundColor(color500)
+        activity?.window?.navigationBarColor = color500
+        activity?.window?.statusBarColor = color700
     }
 
     class AddChallengePagerAdapter(

@@ -15,7 +15,9 @@ import org.threeten.bp.LocalDate
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/8/18.
  */
-sealed class AddChallengeAction : Action
+sealed class AddChallengeAction : Action {
+    object Back : AddChallengeAction()
+}
 
 object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
 
@@ -40,6 +42,13 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                 )
             }
 
+            is AddChallengeNameAction.ChangeColor -> {
+                subState.copy(
+                    type = COLOR_CHANGED,
+                    color = action.color
+                )
+            }
+
             is AddChallengeMotivationAction.Next ->
                 subState.copy(
                     type = CHANGE_PAGE,
@@ -47,23 +56,26 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                     motivationList = action.motivationList
                 )
 
-            AddChallengeMotivationAction.Back ->
-                subState.copy(
-                    type = CHANGE_PAGE,
-                    adapterPosition = subState.adapterPosition - 1
-                )
-
-            AddChallengeNameAction.Back ->
-                subState.copy(
-                    type = CLOSE
-                )
+            AddChallengeAction.Back -> {
+                val adapterPosition = subState.adapterPosition - 1
+                if (adapterPosition < 0) {
+                    subState.copy(
+                        type = CLOSE
+                    )
+                } else {
+                    subState.copy(
+                        type = CHANGE_PAGE,
+                        adapterPosition = adapterPosition
+                    )
+                }
+            }
 
             else -> subState
     }
 
     override fun defaultState() =
         AddChallengeViewState(
-            type = LOADING,
+            type = INITIAL,
             adapterPosition = 0,
             name = "",
             color = Color.GREEN,
@@ -88,9 +100,10 @@ data class AddChallengeViewState(
     val quests: List<PickerQuest>
 ) : ViewState {
     enum class StateType {
-        LOADING,
+        INITIAL,
         DATA_CHANGED,
         CHANGE_PAGE,
-        CLOSE
+        CLOSE,
+        COLOR_CHANGED
     }
 }

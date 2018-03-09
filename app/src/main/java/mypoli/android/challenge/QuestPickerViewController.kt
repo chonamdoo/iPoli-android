@@ -16,7 +16,9 @@ import kotlinx.android.synthetic.main.view_default_toolbar.view.*
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewState.StateType.DATA_CHANGED
 import mypoli.android.common.redux.android.ReduxViewController
-import mypoli.android.common.view.*
+import mypoli.android.common.view.colorRes
+import mypoli.android.common.view.showBackButton
+import mypoli.android.common.view.visible
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -42,8 +44,9 @@ class QuestPickerViewController(args: Bundle? = null) :
     ): View {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.controller_quest_picker, null)
-        setToolbar(view.toolbar)
-        toolbarTitle = "Choose quests"
+        view.toolbar.visibility = View.GONE
+//        setToolbar(view.toolbar)
+//        toolbarTitle = "Choose quests"
         view.questList.layoutManager =
             LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
         view.questList.adapter = QuestAdapter()
@@ -56,7 +59,7 @@ class QuestPickerViewController(args: Bundle? = null) :
         super.onAttach(view)
         showBackButton()
     }
-
+    
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.quest_picker_menu, menu)

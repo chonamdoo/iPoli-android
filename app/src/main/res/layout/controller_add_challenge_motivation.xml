@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
-
-    <include layout="@layout/view_no_elevation_toolbar" />
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+    android:layout_width="match_parent">
 
         <ImageView
             android:id="@+id/imageView"
@@ -37,8 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             style="@style/ChallengeWhiteEditText"
-            android:hint="1st reason"
-            tools:text="Hello World" />
+            android:hint="1st reason" />
 
         <EditText
             android:id="@+id/motivation2"
@@ -88,5 +78,3 @@
             app:layout_constraintTop_toBottomOf="@+id/motivation3"
             app:layout_constraintVertical_bias="1.0" />
     </android.support.constraint.ConstraintLayout>
-
-</android.support.design.widget.CoordinatorLayout>

@@ -3,7 +3,6 @@ package mypoli.android.challenge.add
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -12,7 +11,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
 import kotlinx.android.synthetic.main.controller_add_challenge_name.view.*
-import kotlinx.android.synthetic.main.view_no_elevation_toolbar.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeNameViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
@@ -21,10 +19,11 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
-import mypoli.android.common.view.*
+import mypoli.android.common.view.ColorPickerDialogController
+import mypoli.android.common.view.IconPickerDialogController
+import mypoli.android.common.view.colorRes
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -37,7 +36,6 @@ sealed class AddChallengeNameAction : Action {
     data class ChangeIcon(val icon: Icon?) : AddChallengeNameAction()
     data class ChangeDifficulty(val position: Int) : AddChallengeNameAction()
     data class Next(val name: String) : AddChallengeNameAction()
-    object Back : AddChallengeNameAction()
 }
 
 object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>() {
@@ -120,10 +118,8 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         container: ViewGroup,
         savedViewState: Bundle?
     ): View {
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
         val view = inflater.inflate(R.layout.controller_add_challenge_name, container, false)
-        setToolbar(view.toolbar)
-        toolbarTitle = "New challenge"
 
         view.challengeDifficulty.background.setColorFilter(
             colorRes(R.color.md_white),
@@ -140,20 +136,6 @@ class AddChallengeNameViewController(args: Bundle? = null) :
 
     override fun onCreateLoadAction(): AddChallengeNameAction? {
         return AddChallengeNameAction.Load
-    }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-//        showBackButton()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.d("AAAA name")
-//        if (item.itemId == android.R.id.home) {
-//            dispatch(AddChallengeNameAction.Back)
-//            return true
-//        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun render(state: AddChallengeNameViewState, view: View) {
@@ -238,13 +220,6 @@ class AddChallengeNameViewController(args: Bundle? = null) :
         view: View,
         state: AddChallengeNameViewState
     ) {
-        val color500 = colorRes(state.color.androidColor.color500)
-        val color700 = colorRes(state.color.androidColor.color700)
-        view.appbar.setBackgroundColor(color500)
-        view.toolbar.setBackgroundColor(color500)
-        view.rootContainer.setBackgroundColor(color500)
-        activity?.window?.navigationBarColor = color500
-        activity?.window?.statusBarColor = color700
         view.challengeDifficulty.setPopupBackgroundResource(state.color.androidColor.color500)
 
     }
