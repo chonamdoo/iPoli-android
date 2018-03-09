@@ -14,9 +14,7 @@ import mypoli.android.challenge.persistence.FirestoreChallengeRepository
 import mypoli.android.challenge.predefined.PersonalizeChallengePresenter
 import mypoli.android.challenge.predefined.category.ChallengeCategoryListPresenter
 import mypoli.android.challenge.sideeffect.ChallengeSideEffect
-import mypoli.android.challenge.usecase.BuyChallengeUseCase
-import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
-import mypoli.android.challenge.usecase.ScheduleChallengeUseCase
+import mypoli.android.challenge.usecase.*
 import mypoli.android.common.*
 import mypoli.android.common.rate.AndroidRatePopupScheduler
 import mypoli.android.common.rate.RatePopupScheduler
@@ -201,6 +199,7 @@ class MainUseCaseModule : UseCaseModule, Injects<Module> {
     private val questRepository by required { questRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val playerRepository by required { playerRepository }
+    private val challengeRepository by required { challengeRepository }
     private val reminderScheduler by required { reminderScheduler }
     private val questCompleteScheduler by required { questCompleteScheduler }
     private val levelUpScheduler by required { levelUpScheduler }
@@ -356,6 +355,12 @@ class MainUseCaseModule : UseCaseModule, Injects<Module> {
             questRepository,
             repeatingQuestRepository
         )
+
+    override val removeQuestFromChallengeUseCase
+        get() = RemoveQuestFromChallengeUseCase(questRepository, repeatingQuestRepository)
+
+    override val saveChallengeUseCase: SaveChallengeUseCase
+        get() = SaveChallengeUseCase(challengeRepository, saveQuestsForChallengeUseCase)
 }
 
 interface UseCaseModule {
@@ -406,7 +411,9 @@ interface UseCaseModule {
     val removeRepeatingQuestUseCase: RemoveRepeatingQuestUseCase
     val createRepeatingQuestHistoryUseCase: CreateRepeatingQuestHistoryUseCase
     val createPlaceholderQuestsForRepeatingQuestsUseCase: CreatePlaceholderQuestsForRepeatingQuestsUseCase
+    val saveChallengeUseCase: SaveChallengeUseCase
     val saveQuestsForChallengeUseCase: SaveQuestsForChallengeUseCase
+    val removeQuestFromChallengeUseCase: RemoveQuestFromChallengeUseCase
 }
 
 interface PresenterModule {
