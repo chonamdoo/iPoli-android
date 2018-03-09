@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.controller_add_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.common.redux.android.ReduxViewController
-import timber.log.Timber
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -30,14 +29,18 @@ class AddChallengeViewController(args: Bundle? = null) :
         savedViewState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.controller_add_challenge, container, false)
-
+        view.pager.isLocked = true
         view.pager.adapter = AddChallengePagerAdapter(this)
 
         return view
     }
 
     override fun render(state: AddChallengeViewState, view: View) {
-
+        when(state.type) {
+            AddChallengeViewState.StateType.SHOW_NEXT_PAGE -> {
+                view.pager.currentItem = state.adapterPosition
+            }
+        }
     }
 
     class AddChallengePagerAdapter(
@@ -45,9 +48,7 @@ class AddChallengeViewController(args: Bundle? = null) :
     ) :
         RouterPagerAdapter(controller) {
         override fun configureRouter(router: Router, position: Int) {
-            Timber.d("AAA position $position")
             if (!router.hasRootController()) {
-                Timber.d("AAA position false")
                 when (position) {
                     0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
                     1 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))

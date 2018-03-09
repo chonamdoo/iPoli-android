@@ -33,6 +33,7 @@ sealed class AddChallengeNameAction : Action {
     data class ChangeColor(val color: Color) : AddChallengeNameAction()
     data class ChangeIcon(val icon: Icon?) : AddChallengeNameAction()
     data class ChangeDifficulty(val position: Int) : AddChallengeNameAction()
+    data class Next(val name: String) : AddChallengeNameAction()
 }
 
 object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>() {
@@ -145,6 +146,8 @@ class AddChallengeNameViewController(args: Bundle? = null) :
                     }
 
                 }
+            
+            view.challengeNext.dispatchOnClick(AddChallengeNameAction.Next(view.challengeName.text.toString()))
         }
 
         COLOR_CHANGED -> {

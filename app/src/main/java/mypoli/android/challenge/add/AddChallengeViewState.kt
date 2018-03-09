@@ -2,6 +2,7 @@ package mypoli.android.challenge.add
 
 import mypoli.android.challenge.PickerQuest
 import mypoli.android.challenge.add.AddChallengeViewState.StateType.LOADING
+import mypoli.android.challenge.add.AddChallengeViewState.StateType.SHOW_NEXT_PAGE
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
@@ -26,13 +27,26 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
         state: AppState,
         subState: AddChallengeViewState,
         action: Action
-    ): AddChallengeViewState {
-        return subState
+    ) =
+        when (action) {
+            is AddChallengeNameAction.Next -> {
+                val s = state.stateFor(AddChallengeNameViewState::class.java)
+                subState.copy(
+                    type = SHOW_NEXT_PAGE,
+                    adapterPosition = 1,
+                    name = action.name,
+                    color = s.color,
+                    icon = s.icon,
+                    difficulty = s.difficulty
+                )
+            }
+            else -> subState
     }
 
     override fun defaultState() =
         AddChallengeViewState(
             type = LOADING,
+            adapterPosition = 0,
             name = "",
             color = null,
             icon = null,
@@ -46,6 +60,7 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
 
 data class AddChallengeViewState(
     val type: AddChallengeViewState.StateType,
+    val adapterPosition: Int,
     val name: String,
     val color: Color?,
     val icon: Icon?,
@@ -56,6 +71,7 @@ data class AddChallengeViewState(
 ) : ViewState {
     enum class StateType {
         LOADING,
-        DATA_CHANGED
+        DATA_CHANGED,
+        SHOW_NEXT_PAGE
     }
 }
