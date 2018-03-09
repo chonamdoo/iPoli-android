@@ -9,11 +9,13 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.launch
 import mypoli.android.common.datetime.Time
+import mypoli.android.common.datetime.instant
 import mypoli.android.common.datetime.minutes
 import mypoli.android.common.persistence.CollectionRepository
 import mypoli.android.event.Event
 import mypoli.android.myPoliApp
 import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 import java.util.*
 
 /**
@@ -64,13 +66,10 @@ class AndroidCalendarEventRepository : EventRepository {
     ): ReceiveChannel<List<Event>> {
 
         val beginTime = Calendar.getInstance()
-        beginTime.set(start.year, start.monthValue, start.dayOfMonth, 0, 0, 0)
-
-        val prevDayEnd = end.minusDays(1)
+        beginTime.set(start.year, start.monthValue - 1, start.dayOfMonth, 0, 0, 0)
 
         val endTime = Calendar.getInstance()
-        endTime.set(prevDayEnd.year, prevDayEnd.monthValue, prevDayEnd.dayOfMonth, 23, 59, 59)
-
+        endTime.set(end.year, end.monthValue - 1, end.dayOfMonth, 23, 59, 59)
 
         val builder = Instances.CONTENT_URI.buildUpon()
         ContentUris.appendId(builder, beginTime.timeInMillis)
@@ -104,11 +103,14 @@ class AndroidCalendarEventRepository : EventRepository {
     private fun createEvent(cursor: Cursor): Event {
         val eventStartTime = Time.of(cursor.getInt(PROJECTION_START_MIN_INDEX))
         val eventEndTime = Time.of(cursor.getInt(PROJECTION_END_MIN_INDEX))
+        val tz = ZoneId.of(cursor.getString(PROJECTION_TIME_ZONE_INDEX))
         return Event(
             id = cursor.getString(PROJECTION_ID_INDEX),
             name = cursor.getString(PROJECTION_TITLE_INDEX),
-            start = eventStartTime,
-            duration = (eventEndTime - eventStartTime).toMinuteOfDay().minutes
+            startTime = eventStartTime,
+            duration = (eventEndTime - eventStartTime).toMinuteOfDay().minutes,
+            startDate = cursor.getLong(PROJECTION_BEGIN_INDEX).instant.atZone(tz).toLocalDate(),
+            endDate = cursor.getLong(PROJECTION_END_INDEX).instant.atZone(tz).toLocalDate()
         )
     }
 

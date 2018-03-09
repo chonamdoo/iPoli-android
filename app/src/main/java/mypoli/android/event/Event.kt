@@ -5,6 +5,7 @@ import mypoli.android.common.datetime.Minute
 import mypoli.android.common.datetime.Time
 import mypoli.android.quest.Entity
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -13,8 +14,10 @@ import org.threeten.bp.Instant
 data class Event(
     override val id: String = "",
     val name: String,
-    val start: Time,
+    val startTime: Time,
     val duration: Duration<Minute>,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
 ) : Entity

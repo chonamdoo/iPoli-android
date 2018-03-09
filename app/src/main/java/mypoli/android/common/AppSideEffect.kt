@@ -570,6 +570,9 @@ class LoadAllDataSideEffect : AppSideEffect() {
 //            LocalDate.now()
 //        )
 //        eventsChannel!!.consumeEach {
+//            it.forEach {
+//                Timber.d("AAA ${it.duration.intValue} $it")
+//            }
 //            dispatch(DataLoadedAction.EventsChanged(it))
 //        }
     }
