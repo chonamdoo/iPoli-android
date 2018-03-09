@@ -51,13 +51,14 @@ class AddChallengeViewController(args: Bundle? = null) :
             if (!router.hasRootController()) {
                 when (position) {
                     0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
-                    1 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
+                    1 -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
+                    2 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
                 }
             }
         }
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
-        override fun getCount() = 2
+        override fun getCount() = 3
     }
 }
