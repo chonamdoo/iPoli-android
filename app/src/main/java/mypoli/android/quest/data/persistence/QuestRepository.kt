@@ -38,6 +38,11 @@ interface QuestRepository : CollectionRepository<Quest> {
         currentDate: LocalDate
     ): Quest?
 
+    fun findAllForRepeatingQuest(
+        repeatingQuestId: String,
+        includeRemoved: Boolean = true
+    ): List<Quest>
+
     fun findOriginalScheduledForRepeatingQuestAtDate(
         repeatingQuestId: String,
         currentDate: LocalDate
@@ -117,6 +122,18 @@ class FirestoreQuestRepository(
     sharedPreferences
 ), QuestRepository {
 
+    override fun findAllForRepeatingQuest(
+        repeatingQuestId: String,
+        includeRemoved: Boolean
+    ): List<Quest> {
+
+        val query = collectionReference.whereEqualTo("repeatingQuestId", repeatingQuestId)
+        return if (includeRemoved)
+            toEntityObjects(query.documents)
+        else
+            query.entities
+    }
+
 
     override fun purgeAllNotCompletedForRepeating(repeatingQuestId: String, startDate: LocalDate) {
         val docs = collectionReference
@@ -186,15 +203,13 @@ class FirestoreQuestRepository(
     override fun listenForScheduledBetween(
         startDate: LocalDate,
         endDate: LocalDate
-    ): ReceiveChannel<List<Quest>> {
-
-        val query = collectionReference
+    ) =
+        collectionReference
             .whereGreaterThanOrEqualTo("scheduledDate", startDate.startOfDayUTC())
             .whereLessThanOrEqualTo("scheduledDate", endDate.startOfDayUTC())
             .orderBy("scheduledDate")
             .orderBy("startMinute")
-        return listenForChanges(query)
-    }
+            .listenForChanges()
 
     override fun findScheduledAt(date: LocalDate) =
         collectionReference
@@ -214,11 +229,10 @@ class FirestoreQuestRepository(
             .whereGreaterThan("scheduledDate", start.startOfDayUTC() - 1)
             .whereLessThanOrEqualTo("scheduledDate", end.startOfDayUTC()).entities
 
-    override fun listenForScheduledAt(date: LocalDate): ReceiveChannel<List<Quest>> {
-        val query = collectionReference
+    override fun listenForScheduledAt(date: LocalDate) =
+        collectionReference
             .whereEqualTo("scheduledDate", date.startOfDayUTC())
-        return listenForChanges(query)
-    }
+            .listenForChanges()
 
     override fun findNextReminderTime(afterTime: ZonedDateTime): LocalDateTime? {
 

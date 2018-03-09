@@ -11,7 +11,7 @@ import mypoli.android.repeatingquest.persistence.RepeatingQuestRepository
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/8/18.
  */
-class SaveQuestsForChallengeUseCase(
+open class SaveQuestsForChallengeUseCase(
     private val questRepository: QuestRepository,
     private val repeatingQuestRepository: RepeatingQuestRepository
 ) : UseCase<SaveQuestsForChallengeUseCase.Params, Unit> {
