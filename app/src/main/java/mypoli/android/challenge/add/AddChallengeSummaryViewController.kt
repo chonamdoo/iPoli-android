@@ -6,12 +6,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
-import com.mikepenz.ionicons_typeface_library.Ionicons
 import kotlinx.android.synthetic.main.controller_add_challenge_summary.view.*
 import kotlinx.android.synthetic.main.item_challenge_summary_quest.view.*
 import mypoli.android.R
+import mypoli.android.challenge.add.AddChallengeSummaryViewState.StateType.DATA_CHANGED
 import mypoli.android.challenge.add.AddChallengeSummaryViewState.StateType.INITIAL
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
@@ -19,9 +20,12 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
+import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.visible
 import mypoli.android.quest.BaseQuest
 import mypoli.android.quest.Icon
+import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import org.threeten.bp.LocalDate
 
 /**
@@ -37,8 +41,24 @@ object AddChallengeSummaryReducer : BaseViewStateReducer<AddChallengeSummaryView
         state: AppState,
         subState: AddChallengeSummaryViewState,
         action: Action
-    ): AddChallengeSummaryViewState {
-        return subState
+    ) = when (action) {
+        AddChallengeAction.UpdateSummary -> {
+            val s = state.stateFor(AddChallengeViewState::class.java)
+            val motivationList = s.motivationList
+            subState.copy(
+                type = DATA_CHANGED,
+                name = s.name,
+                icon = s.icon,
+                difficulty = s.difficulty,
+                end = s.end,
+                motivation1 = if (motivationList.isNotEmpty()) motivationList[0] else "",
+                motivation2 = if (motivationList.size > 1) motivationList[1] else "",
+                motivation3 = if (motivationList.size > 2) motivationList[2] else "",
+                quests = s.quests
+            )
+        }
+
+        else -> subState
     }
 
     override fun defaultState() =
@@ -48,8 +68,10 @@ object AddChallengeSummaryReducer : BaseViewStateReducer<AddChallengeSummaryView
             icon = null,
             difficulty = Challenge.Difficulty.NORMAL,
             end = LocalDate.now(),
-            motivationList = listOf(),
-            quests = listOf()
+            quests = listOf(),
+            motivation1 = "",
+            motivation2 = "",
+            motivation3 = ""
         )
 }
 
@@ -59,7 +81,9 @@ data class AddChallengeSummaryViewState(
     val icon: Icon?,
     val difficulty: Challenge.Difficulty,
     val end: LocalDate,
-    val motivationList: List<String>,
+    val motivation1: String,
+    val motivation2: String,
+    val motivation3: String,
     val quests: List<BaseQuest>
 ) : ViewState {
     enum class StateType {
@@ -82,17 +106,42 @@ class AddChallengeSummaryViewController(args: Bundle? = null) :
         val view = inflater.inflate(R.layout.controller_add_challenge_summary, container, false)
         view.challengeQuests.layoutManager =
             LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
-        view.challengeQuests.adapter = QuestAdapter(
-            listOf(
-                QuestViewModel(Ionicons.Icon.ion_android_clipboard, "workout everyday", true),
-                QuestViewModel(Ionicons.Icon.ion_document, "Run", false),
-                QuestViewModel(Ionicons.Icon.ion_android_done, "Read a book", true)
-            )
-        )
+        view.challengeQuests.adapter = QuestAdapter()
         return view
     }
 
     override fun render(state: AddChallengeSummaryViewState, view: View) {
+        when (state.type) {
+            DATA_CHANGED -> {
+                view.challengeName.text = state.name
+                view.challengeIcon.setImageDrawable(
+                    IconicsDrawable(view.context)
+                        .icon(state.iicon)
+                        .colorRes(R.color.md_white)
+                        .sizeDp(24)
+                )
+                view.challengeDifficulty.text = state.difficultyText
+                view.challengeEnd.text = state.formattedEndDate
+                view.challengeMotivation1.text = state.motivation1
+                view.challengeMotivation1.visibility =
+                    if (state.motivation1.isNotEmpty()) View.VISIBLE else View.GONE
+                view.challengeMotivation2.text = state.motivation2
+                view.challengeMotivation2.visibility =
+                    if (state.motivation2.isNotEmpty()) View.VISIBLE else View.GONE
+                view.challengeMotivation3.text = state.motivation3
+                view.challengeMotivation3.visibility =
+                    if (state.motivation3.isNotEmpty()) View.VISIBLE else View.GONE
+
+                (view.challengeQuests.adapter as QuestAdapter).updateAll(state.questViewModels)
+                if (state.quests.isNotEmpty()) {
+                    view.challengeQuestsEmptyState.visibility = View.GONE
+                    view.challengeQuests.visibility = View.VISIBLE
+                } else {
+                    view.challengeQuestsEmptyState.visibility = View.VISIBLE
+                    view.challengeQuests.visibility = View.GONE
+                }
+            }
+        }
     }
 
     data class QuestViewModel(
@@ -135,4 +184,30 @@ class AddChallengeSummaryViewController(args: Bundle? = null) :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    private val AddChallengeSummaryViewState.iicon: IIcon
+        get() = icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist
+
+    private val AddChallengeSummaryViewState.difficultyText: String
+        get() = view!!.resources.getStringArray(R.array.difficulties)[difficulty.ordinal]
+
+    private val AddChallengeSummaryViewState.formattedEndDate: String
+        get() = DateFormatter.format(view!!.context, end)
+
+    private val AddChallengeSummaryViewState.questViewModels: List<QuestViewModel>
+        get() = quests.map {
+            when (it) {
+                is Quest -> QuestViewModel(
+                    icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
+                    name = it.name,
+                    isRepeating = false
+                )
+                is RepeatingQuest -> QuestViewModel(
+                    icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
+                    name = it.name,
+                    isRepeating = true
+                )
+            }
+
+        }
 }

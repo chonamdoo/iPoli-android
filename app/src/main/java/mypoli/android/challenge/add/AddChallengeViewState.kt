@@ -19,6 +19,7 @@ import org.threeten.bp.LocalDate
  */
 sealed class AddChallengeAction : Action {
     object Back : AddChallengeAction()
+    object UpdateSummary : AddChallengeAction()
 }
 
 object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {

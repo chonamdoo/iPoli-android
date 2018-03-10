@@ -1161,4 +1161,5 @@
     <string name="pattern_picker_flexible_weekly_selected_days">I\'ll schedule it at your preferred days of the week</string>
     <string name="pattern_picker_flexible_monthly_no_selected_days">I\'ll schedule it at the perfect days of the month</string>
     <string name="pattern_picker_flexible_monthly_selected_days">I\'ll schedule it at your preferred days of the month</string>
+    <string name="add_challenge_no_quests">No quests for now</string>
 </resources>

@@ -27,7 +27,11 @@ class AddChallengeViewController(args: Bundle? = null) :
     override val reducer = AddChallengeReducer
 
     companion object {
+        const val NAME_INDEX = 0
+        const val MOTIVATION_INDEX = 1
+        const val END_DATE_INDEX = 2
         const val QUEST_PICKER_INDEX = 3
+        const val SUMMARY_INDEX = 4
     }
 
     override fun onCreateView(
@@ -74,6 +78,9 @@ class AddChallengeViewController(args: Bundle? = null) :
                 colorLayout(view, state)
             }
             CHANGE_PAGE -> {
+                if(state.adapterPosition == SUMMARY_INDEX) {
+                    dispatch(AddChallengeAction.UpdateSummary)
+                }
                 view.pager.currentItem = state.adapterPosition
                 activity!!.invalidateOptionsMenu()
                 toolbarTitle = state.toolbarTitle
@@ -109,11 +116,11 @@ class AddChallengeViewController(args: Bundle? = null) :
         override fun configureRouter(router: Router, position: Int) {
             if (!router.hasRootController()) {
                 when (position) {
-                    0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
-                    1 -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
-                    2 -> router.setRoot(RouterTransaction.with(AddChallengeEndDateViewController()))
-                    3 -> router.setRoot(RouterTransaction.with(AddChallengeQuestsViewController()))
-                    4 -> router.setRoot(RouterTransaction.with(AddChallengeSummaryViewController()))
+                    NAME_INDEX -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
+                    MOTIVATION_INDEX -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
+                    END_DATE_INDEX -> router.setRoot(RouterTransaction.with(AddChallengeEndDateViewController()))
+                    QUEST_PICKER_INDEX -> router.setRoot(RouterTransaction.with(AddChallengeQuestsViewController()))
+                    SUMMARY_INDEX -> router.setRoot(RouterTransaction.with(AddChallengeSummaryViewController()))
                 }
             }
         }
@@ -125,11 +132,11 @@ class AddChallengeViewController(args: Bundle? = null) :
 
     private val AddChallengeViewState.toolbarTitle: String
         get() = when (adapterPosition) {
-            0 -> "New Challenge"
-            1 -> "Thoughts to motivate you later"
-            2 -> "Achieve it in"
-            3 -> "Add some quests"
-            4 -> "Summary"
+            NAME_INDEX -> "New Challenge"
+            MOTIVATION_INDEX -> "Thoughts to motivate you later"
+            END_DATE_INDEX -> "Achieve it in"
+            QUEST_PICKER_INDEX -> "Add some quests"
+            SUMMARY_INDEX -> "Summary"
             else -> throw IllegalArgumentException("No controller for position $adapterPosition")
         }
 }
