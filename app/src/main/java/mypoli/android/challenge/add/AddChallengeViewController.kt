@@ -74,8 +74,8 @@ class AddChallengeViewController(args: Bundle? = null) :
                 colorLayout(view, state)
             }
             CHANGE_PAGE -> {
-                activity!!.invalidateOptionsMenu()
                 view.pager.currentItem = state.adapterPosition
+                activity!!.invalidateOptionsMenu()
                 toolbarTitle = state.toolbarTitle
             }
 
@@ -113,13 +113,14 @@ class AddChallengeViewController(args: Bundle? = null) :
                     1 -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
                     2 -> router.setRoot(RouterTransaction.with(AddChallengeEndDateViewController()))
                     3 -> router.setRoot(RouterTransaction.with(AddChallengeQuestsViewController()))
+                    4 -> router.setRoot(RouterTransaction.with(AddChallengeSummaryViewController()))
                 }
             }
         }
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
-        override fun getCount() = 4
+        override fun getCount() = 5
     }
 
     private val AddChallengeViewState.toolbarTitle: String
@@ -128,6 +129,7 @@ class AddChallengeViewController(args: Bundle? = null) :
             1 -> "Thoughts to motivate you later"
             2 -> "Achieve it in"
             3 -> "Add some quests"
+            4 -> "Summary"
             else -> throw IllegalArgumentException("No controller for position $adapterPosition")
         }
 }
