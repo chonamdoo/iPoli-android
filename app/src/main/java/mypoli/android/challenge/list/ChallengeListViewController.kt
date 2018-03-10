@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.item_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
 import mypoli.android.common.redux.android.ReduxViewController
+import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.*
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
 
@@ -80,7 +81,8 @@ class ChallengeListViewController(args: Bundle? = null) :
         val id: String,
         val name: String,
         val icon: IIcon,
-        @ColorRes val color: Int
+        @ColorRes val color: Int,
+        val next: String
     )
 
     inner class ChallengeAdapter(private var viewModels: List<ChallengeViewModel> = listOf()) :
@@ -126,7 +128,23 @@ class ChallengeListViewController(args: Bundle? = null) :
                 name = it.name,
                 color = AndroidColor.valueOf(it.color.name).color500,
                 icon = it.icon?.let { AndroidIcon.valueOf(it.name).icon }
-                    ?: Ionicons.Icon.ion_android_clipboard
+                    ?: Ionicons.Icon.ion_android_clipboard,
+                next = it.nextDate?.let {
+                    stringRes(
+                        R.string.repeating_quest_next,
+                        DateFormatter.format(context, it)
+                    )
+//                    res += if (it.startTime != null) {
+//                        " ${it.startTime} - ${it.endTime}"
+//                    } else {
+//                        " " + stringRes(
+//                            R.string.quest_for_time,
+//                            DurationFormatter.formatShort(view!!.context, it.duration)
+//                        )
+//                    }
+
+//                    res
+                } ?: stringRes(R.string.unscheduled)
             )
         }
     }

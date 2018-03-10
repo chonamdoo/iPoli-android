@@ -22,6 +22,7 @@ data class Challenge(
     val coins: Int? = null,
     val completedAtDate: LocalDate? = null,
     val completedAtTime: Time? = null,
+    val nextDate: LocalDate? = null,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
 ) : Entity {
