@@ -12,8 +12,8 @@ import org.threeten.bp.LocalDate
  */
 data class Schedule(
     val date: LocalDate,
-    val scheduled: List<Quest>,
-    val unscheduled: List<Quest>,
+    val scheduledQuests: List<Quest>,
+    val unscheduledQuests: List<Quest>,
     val events: List<Event>
 )
 

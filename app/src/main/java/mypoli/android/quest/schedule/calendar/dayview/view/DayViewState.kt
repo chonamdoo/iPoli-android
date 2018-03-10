@@ -23,7 +23,7 @@ sealed class DayViewAction : Action {
     data class Load(val currentDate: LocalDate) :
         DayViewAction()
 
-    data class StartEditScheduledQuest(val questViewModel: DayViewController.QuestViewModel) :
+    data class StartEditScheduledQuest(val questViewModel: DayViewController.ScheduledEventViewModel.Quest) :
         DayViewAction()
 
     data class CompleteQuest(val questId: String, val isStarted: Boolean) : DayViewAction()

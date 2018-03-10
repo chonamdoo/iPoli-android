@@ -20,4 +20,7 @@ data class Event(
     val endDate: LocalDate,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
-) : Entity
+) : Entity {
+    val endTime: Time
+        get() = startTime.plus(duration.intValue)
+}
