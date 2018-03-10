@@ -13,7 +13,6 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
-import mypoli.android.quest.Color
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -42,8 +41,7 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
                     type = DATA_LOADED,
                     motivation1 = if (motivationList.isNotEmpty()) motivationList[0] else "",
                     motivation2 = if (motivationList.size > 1) motivationList[1] else "",
-                    motivation3 = if (motivationList.size > 2) motivationList[2] else "",
-                    color = parentState.color
+                    motivation3 = if (motivationList.size > 2) motivationList[2] else ""
                 )
             }
             else -> subState
@@ -53,7 +51,6 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
     override fun defaultState() =
         AddChallengeMotivationViewState(
             type = INITIAL,
-            color = Color.GREEN,
             motivation1 = "",
             motivation2 = "",
             motivation3 = ""
@@ -65,8 +62,7 @@ data class AddChallengeMotivationViewState(
     val type: AddChallengeMotivationViewState.StateType,
     val motivation1: String,
     val motivation2: String,
-    val motivation3: String,
-    val color: Color
+    val motivation3: String
 ) : ViewState {
     enum class StateType {
         INITIAL,
