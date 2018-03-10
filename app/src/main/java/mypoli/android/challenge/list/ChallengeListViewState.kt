@@ -6,6 +6,9 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.DataLoadedAction
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
+import mypoli.android.quest.Color
+import mypoli.android.quest.Icon
+import org.threeten.bp.LocalDate
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -13,7 +16,7 @@ import mypoli.android.common.redux.Action
  */
 
 sealed class ChallengeListAction : Action {
-    object LoadData : ChallengeListAction()
+    object Load : ChallengeListAction()
 }
 
 object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
@@ -23,8 +26,19 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
         subState: ChallengeListViewState,
         action: Action
     ) = when (action) {
-        is ChallengeListAction.LoadData -> {
-            createState(state.dataState.challenges)
+        is ChallengeListAction.Load -> {
+            createState(
+                listOf(
+                    Challenge(
+                        name = "Test challenge",
+                        color = Color.BLUE,
+                        icon = Icon.HEART,
+                        difficulty = Challenge.Difficulty.HELL,
+                        end = LocalDate.now().plusWeeks(1)
+                    )
+                )
+            )
+//            createState(state.dataState.challenges)
         }
 
         is DataLoadedAction.ChallengesChanged -> {
