@@ -156,9 +156,12 @@ class ChallengeListViewController(args: Bundle? = null) :
             val daysUntilComplete = LocalDate.now().daysUntil(it.end)
 
             val end = when {
-                daysUntilComplete == 0L -> "Ends Today"
-                daysUntilComplete <= 7 -> "Ends in $daysUntilComplete days"
-                else -> "Ends at ${DateFormatter.formatWithoutYear(view!!.context, it.end)}"
+                daysUntilComplete == 0L -> stringRes(R.string.ends_today)
+                daysUntilComplete <= 7 -> stringRes(R.string.ends_in_days, daysUntilComplete)
+                else -> stringRes(
+                    R.string.ends_at_date,
+                    DateFormatter.formatWithoutYear(view!!.context, it.end)
+                )
             }
 
             ChallengeViewModel(

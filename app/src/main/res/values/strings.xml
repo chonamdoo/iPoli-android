@@ -1148,8 +1148,8 @@
     <string name="fb_login_protocol_scheme">fb1826884640679057</string>
     <string name="login_no_existing_user_error">There is no user with this account</string>
     <string name="login_anonymous_no_existing_user_error">Please, register account</string>
-    <string name="loading">Loading...</string>
-    <string name="please_wait">Please wait ...</string>
+    <string name="loading">Loading…</string>
+    <string name="please_wait">Please wait…</string>
     <string name="login_error_contact_us_message">Something went really wrong</string>
     <string name="help_me_login">Help me login</string>
     <string name="welcome_back_hero">Welcome back, Hero!</string>
@@ -1162,4 +1162,7 @@
     <string name="pattern_picker_flexible_monthly_no_selected_days">I\'ll schedule it at the perfect days of the month</string>
     <string name="pattern_picker_flexible_monthly_selected_days">I\'ll schedule it at your preferred days of the month</string>
     <string name="add_challenge_no_quests">No quests for now</string>
+    <string name="ends_today">Ends Today</string>
+    <string name="ends_in_days">Ends in %d days</string>
+    <string name="ends_at_date">Ends at %s</string>
 </resources>
