@@ -31,8 +31,15 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
                 listOf(
                     Challenge(
                         name = "Test challenge",
-                        color = Color.BLUE,
+                        color = Color.RED,
                         icon = Icon.HEART,
+                        difficulty = Challenge.Difficulty.HELL,
+                        end = LocalDate.now().plusWeeks(1)
+                    ),
+                    Challenge(
+                        name = "Run 5k marathon",
+                        color = Color.GREEN,
+                        icon = Icon.RUN,
                         difficulty = Challenge.Difficulty.HELL,
                         end = LocalDate.now().plusWeeks(1)
                     )
