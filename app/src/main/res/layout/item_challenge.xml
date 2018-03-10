@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="92dp"
+    android:layout_height="72dp"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
@@ -24,18 +24,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/md_dark_text_54"
         app:layout_constraintBottom_toTopOf="@+id/cNext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cIcon"
+        app:layout_constraintStart_toEndOf="@+id/cProgress"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="Name" />
 
     <ImageView
@@ -73,11 +70,12 @@
         android:id="@+id/cNext"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="Next: Today at 10:30"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/md_dark_text_54"
-        app:layout_constraintStart_toEndOf="@+id/cIcon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/cName"
         app:layout_constraintTop_toBottomOf="@+id/cName"
         tools:text="Today" />
 
