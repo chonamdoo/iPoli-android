@@ -53,6 +53,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_gift_grey_24dp" />
 
+    <ProgressBar
+        android:id="@+id/cProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/challenge_progress_background"
+        android:clickable="false"
+        android:max="100"
+        android:progress="40"
+        android:progressDrawable="@drawable/challenge_progress"
+        app:layout_constraintBottom_toBottomOf="@+id/cIcon"
+        app:layout_constraintEnd_toEndOf="@+id/cIcon"
+        app:layout_constraintStart_toStartOf="@+id/cIcon"
+        app:layout_constraintTop_toTopOf="@+id/cIcon" />
+
     <TextView
         android:id="@+id/cNext"
         android:layout_width="0dp"
