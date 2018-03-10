@@ -18,11 +18,13 @@ import kotlinx.android.synthetic.main.controller_challenge_list.view.*
 import kotlinx.android.synthetic.main.item_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
+import mypoli.android.common.datetime.daysUntil
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.text.DurationFormatter
 import mypoli.android.common.view.*
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
+import org.threeten.bp.LocalDate
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -83,7 +85,8 @@ class ChallengeListViewController(args: Bundle? = null) :
         val name: String,
         val icon: IIcon,
         @ColorRes val color: Int,
-        val next: String
+        val next: String,
+        val end: String
     )
 
     inner class ChallengeAdapter(private var viewModels: List<ChallengeViewModel> = listOf()) :
@@ -114,6 +117,7 @@ class ChallengeListViewController(args: Bundle? = null) :
             )
 
             view.cNext.text = vm.next
+            view.cEnd.text = vm.end
         }
 
         override fun getItemCount() = viewModels.size
@@ -149,13 +153,22 @@ class ChallengeListViewController(args: Bundle? = null) :
                 )
             }
 
+            val daysUntilComplete = LocalDate.now().daysUntil(it.end)
+
+            val end = when {
+                daysUntilComplete == 0L -> "Ends Today"
+                daysUntilComplete <= 7 -> "Ends in $daysUntilComplete days"
+                else -> "Ends at ${DateFormatter.formatWithoutYear(view!!.context, it.end)}"
+            }
+
             ChallengeViewModel(
                 id = it.id,
                 name = it.name,
                 color = AndroidColor.valueOf(it.color.name).color500,
                 icon = it.icon?.let { AndroidIcon.valueOf(it.name).icon }
                     ?: Ionicons.Icon.ion_android_clipboard,
-                next = next
+                next = next,
+                end = end
             )
         }
     }
