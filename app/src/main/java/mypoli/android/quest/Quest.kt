@@ -146,7 +146,7 @@ data class Quest(
 
     val isCompleted = completedAtDate != null
     val endTime: Time?
-        get() = startTime?.let { Time.of(it.toMinuteOfDay() + duration) }
+        get() = startTime?.plus(duration)
     val isScheduled = startTime != null
 
     val actualStart: Instant?

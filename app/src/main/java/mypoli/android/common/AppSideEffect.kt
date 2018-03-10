@@ -17,6 +17,7 @@ import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.Dispatcher
 import mypoli.android.common.redux.SideEffect
 import mypoli.android.common.view.AppWidgetUtil
+import mypoli.android.event.Event
 import mypoli.android.myPoliApp
 import mypoli.android.pet.store.PetStoreAction
 import mypoli.android.pet.usecase.BuyPetUseCase
@@ -80,6 +81,7 @@ abstract class AppSideEffect : SideEffect<AppState>,
 class DayViewSideEffect : AppSideEffect() {
     private val saveQuestUseCase by required { saveQuestUseCase }
     private val questRepository by required { questRepository }
+    private val eventRepository by required { eventRepository }
     private val removeQuestUseCase by required { removeQuestUseCase }
     private val loadScheduleForDateUseCase by required { loadScheduleForDateUseCase }
     private val undoRemoveQuestUseCase by required { undoRemoveQuestUseCase }
@@ -155,15 +157,24 @@ class DayViewSideEffect : AppSideEffect() {
                             )
                         )
 
+//                    val events = eventRepository.findScheduledBetween(
+//                        calendarIds = setOf(3),
+//                        start = startDate!!,
+//                        end = endDate!!
+//                    )
+
+                    val events = listOf<Event>()
+
                     val schedule =
                         loadScheduleForDateUseCase.execute(
                             LoadScheduleForDateUseCase.Params(
                                 startDate = startDate!!,
                                 endDate = endDate!!,
-                                quests = it + placeholderQuests
+                                quests = it + placeholderQuests,
+                                events = events
                             )
                         )
-                    dispatch(DataLoadedAction.CalendarScheduledChanged(schedule))
+                    dispatch(DataLoadedAction.CalendarScheduleChanged(schedule))
                 }
             }
         }
@@ -523,6 +534,7 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private val playerRepository by required { playerRepository }
     private val questRepository by required { questRepository }
     private val challengeRepository by required { challengeRepository }
+    private val eventRepository by required { eventRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val findNextDateForRepeatingQuestUseCase by required { findNextDateForRepeatingQuestUseCase }
     private val findPeriodProgressForRepeatingQuestUseCase by required { findPeriodProgressForRepeatingQuestUseCase }

@@ -4,6 +4,7 @@ import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.Reducer
 import mypoli.android.common.redux.State
+import mypoli.android.event.Event
 import mypoli.android.player.Player
 import mypoli.android.quest.Quest
 import mypoli.android.quest.RepeatingQuest
@@ -33,13 +34,15 @@ sealed class DataLoadedAction : Action {
         val currentAgendaItemDate: LocalDate?
     ) : DataLoadedAction()
 
-    data class CalendarScheduledChanged(val schedule: Map<LocalDate, Schedule>) :
+    data class CalendarScheduleChanged(val schedule: Map<LocalDate, Schedule>) :
         DataLoadedAction()
 
     data class RepeatingQuestHistoryChanged(
         val repeatingQuestId: String,
         val history: CreateRepeatingQuestHistoryUseCase.History
     ) : DataLoadedAction()
+
+    data class EventsChanged(val events: List<Event>) : DataLoadedAction()
 }
 
 data class AppDataState(
@@ -49,7 +52,8 @@ data class AppDataState(
     val calendarSchedule: Map<LocalDate, Schedule>,
     val repeatingQuests: List<RepeatingQuest>,
     val challenges: List<Challenge>,
-    val agendaItems: List<CreateAgendaItemsUseCase.AgendaItem>
+    val agendaItems: List<CreateAgendaItemsUseCase.AgendaItem>,
+    val events: List<Event>
 ) : State
 
 object AppDataReducer : Reducer<AppState, AppDataState> {
@@ -65,7 +69,7 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
                 )
             }
 
-            is DataLoadedAction.CalendarScheduledChanged ->
+            is DataLoadedAction.CalendarScheduleChanged ->
                 subState.copy(
                     calendarSchedule = action.schedule
                 )
@@ -85,6 +89,11 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
                     agendaItems = action.agendaItems
                 )
 
+            is DataLoadedAction.EventsChanged ->
+                subState.copy(
+                    events = action.events
+                )
+
             else -> subState
         }
 
@@ -96,7 +105,8 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
             calendarSchedule = mapOf(),
             repeatingQuests = listOf(),
             challenges = listOf(),
-            agendaItems = listOf()
+            agendaItems = listOf(),
+            events = listOf()
         )
     }
 
