@@ -40,14 +40,6 @@ class AddChallengeViewController(args: Bundle? = null) :
         setToolbar(view.toolbar)
         view.pager.isLocked = true
         view.pager.adapter = AddChallengePagerAdapter(this)
-//        view.pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-//
-//            override fun onPageSelected(position: Int) {
-//                Timber.d("AAA page selected $position")
-//
-//            }
-//
-//        })
         return view
     }
 

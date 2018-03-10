@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import kotlinx.android.synthetic.main.controller_add_challenge_quests.view.*
 import kotlinx.android.synthetic.main.list_quest_picker.view.*
 import mypoli.android.R
 import mypoli.android.challenge.*
@@ -29,6 +30,7 @@ class AddChallengeQuestsViewController(args: Bundle? = null) :
         view.questList.adapter = QuestAdapter(listOf(), { id, isChecked ->
             dispatch(QuestPickerAction.Check(id, isChecked))
         })
+        view.challengeNext.dispatchOnClick(QuestPickerAction.Next)
         return view
     }
 
