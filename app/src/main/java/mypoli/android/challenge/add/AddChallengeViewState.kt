@@ -33,12 +33,12 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
         action: Action
     ) =
         when (action) {
-            is AddChallengeNameAction.Next -> {
+            AddChallengeNameAction.Next -> {
                 val s = state.stateFor(AddChallengeNameViewState::class.java)
                 subState.copy(
                     type = CHANGE_PAGE,
                     adapterPosition = subState.adapterPosition + 1,
-                    name = action.name,
+                    name = s.name,
                     color = s.color,
                     icon = s.icon,
                     difficulty = s.difficulty
@@ -52,12 +52,14 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                 )
             }
 
-            is AddChallengeMotivationAction.Next ->
+            is AddChallengeMotivationAction.Next -> {
+                val s = state.stateFor(AddChallengeMotivationViewState::class.java)
                 subState.copy(
                     type = CHANGE_PAGE,
                     adapterPosition = subState.adapterPosition + 1,
-                    motivationList = action.motivationList
+                    motivationList = listOf(s.motivation1, s.motivation2, s.motivation3)
                 )
+            }
 
             is AddChallengeEndDateAction.SelectDate -> {
                 subState.copy(

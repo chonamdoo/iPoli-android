@@ -16,6 +16,7 @@ import mypoli.android.challenge.add.AddChallengeNameViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.Validator
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
@@ -35,7 +36,8 @@ sealed class AddChallengeNameAction : Action {
     data class ChangeColor(val color: Color) : AddChallengeNameAction()
     data class ChangeIcon(val icon: Icon?) : AddChallengeNameAction()
     data class ChangeDifficulty(val position: Int) : AddChallengeNameAction()
-    data class Next(val name: String) : AddChallengeNameAction()
+    object Next : AddChallengeNameAction()
+    data class Validate(val name: String) : AddChallengeNameAction()
 }
 
 object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>() {
@@ -77,6 +79,22 @@ object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>
                     type = DIFFICULTY_CHANGED,
                     difficulty = Challenge.Difficulty.values()[action.position]
                 )
+
+            is AddChallengeNameAction.Validate -> {
+                val errors = Validator.validate(action).check<ValidationError> {
+                    "name" {
+                        given { name.isEmpty() } addError ValidationError.EMPTY_NAME
+                    }
+                }
+                subState.copy(
+                    type = if (errors.isEmpty()) {
+                        VALIDATION_SUCCESSFUL
+                    } else {
+                        VALIDATION_ERROR_EMPTY_NAME
+                    },
+                    name = action.name
+                )
+            }
             else -> subState
     }
 
@@ -88,7 +106,12 @@ object AddChallengeNameReducer : BaseViewStateReducer<AddChallengeNameViewState>
             icon = null,
             difficulty = Challenge.Difficulty.NORMAL
         )
+
+    enum class ValidationError {
+        EMPTY_NAME
+    }
 }
+
 
 
 data class AddChallengeNameViewState(
@@ -103,7 +126,9 @@ data class AddChallengeNameViewState(
         DATA_LOADED,
         COLOR_CHANGED,
         ICON_CHANGED,
-        DIFFICULTY_CHANGED
+        DIFFICULTY_CHANGED,
+        VALIDATION_ERROR_EMPTY_NAME,
+        VALIDATION_SUCCESSFUL
     }
 }
 
@@ -161,7 +186,7 @@ class AddChallengeNameViewController(args: Bundle? = null) :
                     }
 
                 view.challengeNext.setOnClickListener {
-                    dispatch(AddChallengeNameAction.Next(view.challengeName.text.toString()))
+                    dispatch(AddChallengeNameAction.Validate(view.challengeName.text.toString()))
                 }
             }
 
@@ -174,6 +199,14 @@ class AddChallengeNameViewController(args: Bundle? = null) :
             }
 
             DIFFICULTY_CHANGED -> {
+            }
+
+            VALIDATION_ERROR_EMPTY_NAME -> {
+                view.challengeName.error = "Think of a name"
+            }
+
+            VALIDATION_SUCCESSFUL -> {
+                dispatch(AddChallengeNameAction.Next)
             }
         }
     }
