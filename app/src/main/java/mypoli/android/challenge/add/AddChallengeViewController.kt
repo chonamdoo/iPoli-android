@@ -71,6 +71,11 @@ class AddChallengeViewController(args: Bundle? = null) :
         return super.onOptionsItemSelected(item)
     }
 
+    override fun handleBack(): Boolean {
+        dispatch(AddChallengeAction.Back)
+        return true
+    }
+
     override fun render(state: AddChallengeViewState, view: View) {
         when(state.type) {
             INITIAL -> {
