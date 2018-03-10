@@ -1,12 +1,14 @@
 package mypoli.android.challenge.add
 
-import mypoli.android.challenge.PickerQuest
+import mypoli.android.challenge.QuestPickerAction
+import mypoli.android.challenge.QuestPickerViewState
 import mypoli.android.challenge.add.AddChallengeViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
+import mypoli.android.quest.BaseQuest
 import mypoli.android.quest.Color
 import mypoli.android.quest.Icon
 import org.threeten.bp.LocalDate
@@ -64,6 +66,15 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                 )
             }
 
+            is QuestPickerAction.Next -> {
+                val s = state.stateFor(QuestPickerViewState::class.java)
+                subState.copy(
+                    type = CHANGE_PAGE,
+                    adapterPosition = subState.adapterPosition + 1,
+                    quests = s.allQuests.filter { s.selectedQuests.contains(it.id) }.map { it.baseQuest }
+                )
+            }
+
             AddChallengeAction.Back -> {
                 val adapterPosition = subState.adapterPosition - 1
                 if (adapterPosition < 0) {
@@ -105,7 +116,7 @@ data class AddChallengeViewState(
     val difficulty: Challenge.Difficulty,
     val end: LocalDate,
     val motivationList: List<String>,
-    val quests: List<PickerQuest>
+    val quests: List<BaseQuest>
 ) : ViewState {
     enum class StateType {
         INITIAL,

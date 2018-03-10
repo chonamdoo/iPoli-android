@@ -35,6 +35,7 @@ sealed class QuestPickerAction : Action {
     data class Filter(val query: String) : QuestPickerAction()
     data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()
     object Save : QuestPickerAction()
+    object Next : QuestPickerAction()
 }
 
 object QuestPickerReducer : BaseViewStateReducer<QuestPickerViewState>() {
@@ -249,6 +250,9 @@ class QuestAdapter(
         view.questCheck.isChecked = vm.isSelected
         view.questCheck.setOnCheckedChangeListener { _, isChecked ->
             checkListener(vm.id, isChecked)
+        }
+        view.setOnClickListener {
+            view.questCheck.isChecked = !view.questCheck.isChecked
         }
     }
 
