@@ -23,6 +23,8 @@ data class Challenge(
     val completedAtDate: LocalDate? = null,
     val completedAtTime: Time? = null,
     val nextDate: LocalDate? = null,
+    val nextStartTime: Time? = null,
+    val nextDuration: Int? = null,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
 ) : Entity {
@@ -30,4 +32,8 @@ data class Challenge(
     enum class Difficulty {
         EASY, NORMAL, HARD, HELL
     }
+
+    val nextEndTime: Time?
+        get() = nextStartTime?.plus(nextDuration!!)
+
 }

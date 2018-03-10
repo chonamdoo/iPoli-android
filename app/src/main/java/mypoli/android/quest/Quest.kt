@@ -250,9 +250,7 @@ data class RepeatingQuest(
         get() = if (end == null) false else LocalDate.now().isAfter(end)
 
     val endTime: Time?
-        get() = startTime?.let {
-            startTime.plus(duration)
-        }
+        get() = startTime?.plus(duration)
 
     val isFlexible: Boolean
         get() = repeatingPattern is RepeatingPattern.Flexible

@@ -20,6 +20,7 @@ import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
+import mypoli.android.common.text.DurationFormatter
 import mypoli.android.common.view.*
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
 
@@ -111,6 +112,8 @@ class ChallengeListViewController(args: Bundle? = null) :
                     .colorRes(R.color.md_white)
                     .sizeDp(24)
             )
+
+            view.cNext.text = vm.next
         }
 
         override fun getItemCount() = viewModels.size
@@ -123,28 +126,36 @@ class ChallengeListViewController(args: Bundle? = null) :
 
     private fun ChallengeListViewState.Changed.toViewModels(context: Context): List<ChallengeListViewController.ChallengeViewModel> {
         return challenges.map {
+
+            val next = when {
+                it.nextDate != null -> {
+                    var res = stringRes(
+                        R.string.repeating_quest_next,
+                        DateFormatter.format(context, it.nextDate)
+                    )
+                    res += if (it.nextStartTime != null) {
+                        " ${it.nextStartTime} - ${it.nextEndTime}"
+                    } else {
+                        " " + stringRes(
+                            R.string.quest_for_time,
+                            DurationFormatter.formatShort(view!!.context, it.nextDuration!!)
+                        )
+                    }
+                    res
+                }
+                else -> stringRes(
+                    R.string.repeating_quest_next,
+                    stringRes(R.string.unscheduled)
+                )
+            }
+
             ChallengeViewModel(
                 id = it.id,
                 name = it.name,
                 color = AndroidColor.valueOf(it.color.name).color500,
                 icon = it.icon?.let { AndroidIcon.valueOf(it.name).icon }
                     ?: Ionicons.Icon.ion_android_clipboard,
-                next = it.nextDate?.let {
-                    stringRes(
-                        R.string.repeating_quest_next,
-                        DateFormatter.format(context, it)
-                    )
-//                    res += if (it.startTime != null) {
-//                        " ${it.startTime} - ${it.endTime}"
-//                    } else {
-//                        " " + stringRes(
-//                            R.string.quest_for_time,
-//                            DurationFormatter.formatShort(view!!.context, it.duration)
-//                        )
-//                    }
-
-//                    res
-                } ?: stringRes(R.string.unscheduled)
+                next = next
             )
         }
     }

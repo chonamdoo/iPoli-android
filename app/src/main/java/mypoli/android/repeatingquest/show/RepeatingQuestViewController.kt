@@ -276,12 +276,6 @@ class RepeatingQuestViewController(args: Bundle? = null) :
             )
         }
 
-
-//    if (nextScheduledDate != null) DateFormatter.format(
-//            view!!.context,
-//            nextScheduledDate
-//        ) else stringRes(R.string.unscheduled)
-
     private val RepeatingQuestViewState.Changed.frequencyText
         get() = when (repeat) {
             RepeatingQuestViewState.Changed.RepeatType.Daily -> {
