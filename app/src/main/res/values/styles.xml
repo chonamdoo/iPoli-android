@@ -187,6 +187,8 @@
         <item name="android:textColorHint">@color/md_light_text_54</item>
         <item name="colorControlActivated">@color/md_light_text_87</item>
         <item name="android:textColorPrimary">@color/md_light_text_87</item>
+        <item name="android:textColorHighlight">@color/md_red_500</item>
+        <item name="android:textColorLink">@color/md_red_500</item>
     </style>
 
     <style name="ChallengeWhiteEditText">

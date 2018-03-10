@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.controller_add_challenge_motivation.view.*
 import mypoli.android.R
-import mypoli.android.challenge.add.AddChallengeMotivationViewState.StateType.DATA_LOADED
-import mypoli.android.challenge.add.AddChallengeMotivationViewState.StateType.INITIAL
+import mypoli.android.challenge.add.AddChallengeMotivationViewState.StateType.*
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.Validator
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.android.ReduxViewController
@@ -20,7 +20,8 @@ import mypoli.android.common.redux.android.ReduxViewController
  */
 sealed class AddChallengeMotivationAction : Action {
     object Load : AddChallengeMotivationAction()
-    data class Next(val motivationList: List<String>) : AddChallengeMotivationAction()
+    object Next : AddChallengeMotivationAction()
+    data class Validate(val motivationList: List<String>) : AddChallengeMotivationAction()
 }
 
 
@@ -44,6 +45,27 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
                     motivation3 = if (motivationList.size > 2) motivationList[2] else ""
                 )
             }
+            is AddChallengeMotivationAction.Validate -> {
+                val errors = Validator.validate(action).check<ValidationError> {
+                    "name" {
+                        given {
+                            motivationList.isEmpty()
+                            || motivationList.none { it.isNotEmpty() }
+                        } addError ValidationError.EMPTY_MOTIVATION
+                    }
+                }
+                val motivationList = action.motivationList
+                subState.copy(
+                    type = if (errors.isEmpty()) {
+                        VALIDATION_SUCCESSFUL
+                    } else {
+                        VALIDATION_ERROR_EMPTY_MOTIVATION
+                    },
+                    motivation1 = if (motivationList.isNotEmpty()) motivationList[0] else "",
+                    motivation2 = if (motivationList.size > 1) motivationList[1] else "",
+                    motivation3 = if (motivationList.size > 2) motivationList[2] else ""
+                )
+            }
             else -> subState
         }
     }
@@ -56,6 +78,9 @@ object AddChallengeMotivationReducer : BaseViewStateReducer<AddChallengeMotivati
             motivation3 = ""
         )
 
+    enum class ValidationError {
+        EMPTY_MOTIVATION
+    }
 }
 
 data class AddChallengeMotivationViewState(
@@ -66,7 +91,9 @@ data class AddChallengeMotivationViewState(
 ) : ViewState {
     enum class StateType {
         INITIAL,
-        DATA_LOADED
+        DATA_LOADED,
+        VALIDATION_SUCCESSFUL,
+        VALIDATION_ERROR_EMPTY_MOTIVATION
     }
 }
 
@@ -80,10 +107,8 @@ class AddChallengeMotivationViewController(args: Bundle? = null) :
         inflater: LayoutInflater,
         container: ViewGroup,
         savedViewState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.controller_add_challenge_motivation, container, false)
-        return view
-    }
+    ): View =
+        inflater.inflate(R.layout.controller_add_challenge_motivation, container, false)
 
     override fun onCreateLoadAction() =
         AddChallengeMotivationAction.Load
@@ -94,7 +119,7 @@ class AddChallengeMotivationViewController(args: Bundle? = null) :
             INITIAL -> {
                 view.challengeNext.setOnClickListener {
                     dispatch(
-                        AddChallengeMotivationAction.Next(
+                        AddChallengeMotivationAction.Validate(
                             listOf(
                                 view.motivation1.text.toString(),
                                 view.motivation2.text.toString(),
@@ -108,6 +133,14 @@ class AddChallengeMotivationViewController(args: Bundle? = null) :
                 view.motivation1.setText(state.motivation1)
                 view.motivation2.setText(state.motivation2)
                 view.motivation3.setText(state.motivation3)
+            }
+
+            VALIDATION_ERROR_EMPTY_MOTIVATION -> {
+                view.motivation1.error = "No motivation?"
+            }
+
+            VALIDATION_SUCCESSFUL -> {
+                dispatch(AddChallengeMotivationAction.Next)
             }
         }
     }
