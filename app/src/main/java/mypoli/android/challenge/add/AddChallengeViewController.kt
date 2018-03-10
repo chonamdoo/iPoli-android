@@ -10,7 +10,6 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import kotlinx.android.synthetic.main.controller_add_challenge.view.*
 import kotlinx.android.synthetic.main.view_no_elevation_toolbar.view.*
 import mypoli.android.R
-import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.challenge.add.AddChallengeViewState.StateType.*
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.colorRes
@@ -26,6 +25,10 @@ class AddChallengeViewController(args: Bundle? = null) :
     ReduxViewController<AddChallengeAction, AddChallengeViewState, AddChallengeReducer>(args) {
 
     override val reducer = AddChallengeReducer
+
+    companion object {
+        const val QUEST_PICKER_INDEX = 3
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,11 +54,16 @@ class AddChallengeViewController(args: Bundle? = null) :
     override fun onAttach(view: View) {
         super.onAttach(view)
         showBackButton()
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
+
+    override fun onDetach(view: View) {
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        super.onDetach(view)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.actionSearch)?.isVisible = view!!.pager.currentItem == 3
-        menu.findItem(R.id.actionSave)?.isVisible = view!!.pager.currentItem == 3
+        menu.findItem(R.id.actionSearch)?.isVisible = view!!.pager.currentItem == QUEST_PICKER_INDEX
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -112,7 +120,7 @@ class AddChallengeViewController(args: Bundle? = null) :
                     0 -> router.setRoot(RouterTransaction.with(AddChallengeNameViewController()))
                     1 -> router.setRoot(RouterTransaction.with(AddChallengeMotivationViewController()))
                     2 -> router.setRoot(RouterTransaction.with(AddChallengeEndDateViewController()))
-                    3 -> router.setRoot(RouterTransaction.with(QuestPickerViewController("")))
+                    3 -> router.setRoot(RouterTransaction.with(AddChallengeQuestsViewController()))
                 }
             }
         }
