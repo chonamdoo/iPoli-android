@@ -77,6 +77,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/cName"
         app:layout_constraintTop_toBottomOf="@+id/cName"
-        tools:text="Today" />
+        tools:text="Next: Today" />
+
+    <TextView
+        android:id="@+id/cEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:text="Ends in 2 days"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/md_dark_text_54"
+        app:layout_constraintBottom_toBottomOf="@+id/cNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/cNext"
+        app:layout_constraintTop_toTopOf="@+id/cNext"
+        tools:text="Ends in 2 days" />
 
 </android.support.constraint.ConstraintLayout>
