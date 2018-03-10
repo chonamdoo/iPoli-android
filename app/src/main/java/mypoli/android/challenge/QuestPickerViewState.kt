@@ -1,10 +1,25 @@
 package mypoli.android.challenge
 
+import android.content.res.ColorStateList
+import android.support.annotation.ColorRes
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.typeface.IIcon
+import com.mikepenz.ionicons_typeface_library.Ionicons
+import kotlinx.android.synthetic.main.item_quest_picker.view.*
+import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewState.StateType.*
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
+import mypoli.android.common.view.AndroidColor
+import mypoli.android.common.view.AndroidIcon
+import mypoli.android.common.view.visible
 import mypoli.android.quest.*
 import mypoli.android.repeatingquest.entity.RepeatingPattern
 import org.threeten.bp.LocalDate
@@ -15,7 +30,7 @@ import org.threeten.bp.LocalDate
  */
 
 sealed class QuestPickerAction : Action {
-    data class Load(val challengeId: String?) : QuestPickerAction()
+    data class Load(val challengeId: String? = null) : QuestPickerAction()
     data class Loaded(val quests: List<Quest>, val repeatingQuests: List<RepeatingQuest>) : QuestPickerAction()
     data class Filter(val query: String) : QuestPickerAction()
     data class Check(val id: String, val isSelected: Boolean) : QuestPickerAction()
@@ -200,3 +215,86 @@ data class QuestPickerViewState(
     }
 }
 
+data class QuestViewModel(
+    val id: String,
+    val name: String,
+    @ColorRes val color: Int,
+    val icon: IIcon,
+    val isRepeating: Boolean,
+    val isSelected: Boolean
+)
+
+class QuestAdapter(
+    private var viewModels: List<QuestViewModel> = listOf(),
+    private var checkListener: (String, Boolean) -> Unit
+) :
+    RecyclerView.Adapter<ViewHolder>() {
+    override fun getItemCount() = viewModels.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val vm = viewModels[position]
+        val view = holder.itemView
+        view.questName.text = vm.name
+        view.questIcon.backgroundTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(view.context, vm.color))
+        view.questIcon.setImageDrawable(
+            IconicsDrawable(view.context)
+                .icon(vm.icon)
+                .colorRes(R.color.md_white)
+                .sizeDp(24)
+        )
+        view.questRepeatIndicator.visible = vm.isRepeating
+
+        view.questCheck.setOnCheckedChangeListener(null)
+        view.questCheck.isChecked = vm.isSelected
+        view.questCheck.setOnCheckedChangeListener { _, isChecked ->
+            checkListener(vm.id, isChecked)
+        }
+    }
+
+    fun updateAll(viewModels: List<QuestViewModel>) {
+        this.viewModels = viewModels
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_quest_picker,
+                parent,
+                false
+            )
+        )
+}
+
+class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+fun QuestPickerViewState.toViewModels() =
+    filteredQuests.map {
+        when (it) {
+            is PickerQuest.OneTime -> {
+                val quest = it.quest
+                QuestViewModel(
+                    id = quest.id,
+                    name = quest.name,
+                    color = AndroidColor.valueOf(quest.color.name).color500,
+                    icon = quest.icon?.let { AndroidIcon.valueOf(it.name).icon }
+                        ?: Ionicons.Icon.ion_android_clipboard,
+                    isRepeating = false,
+                    isSelected = selectedQuests.contains(it.id)
+                )
+            }
+            is PickerQuest.Repeating -> {
+                val rq = it.repeatingQuest
+                QuestViewModel(
+                    id = rq.id,
+                    name = rq.name,
+                    color = AndroidColor.valueOf(rq.color.name).color500,
+                    icon = rq.icon?.let { AndroidIcon.valueOf(it.name).icon }
+                        ?: Ionicons.Icon.ion_android_clipboard,
+                    isRepeating = true,
+                    isSelected = selectedQuests.contains(it.id)
+                )
+            }
+        }
+    }
