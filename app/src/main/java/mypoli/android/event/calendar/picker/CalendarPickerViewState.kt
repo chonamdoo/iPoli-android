@@ -2,8 +2,11 @@ package mypoli.android.event.calendar.picker
 
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.DataLoadedAction
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
+import mypoli.android.event.Calendar
+import timber.log.Timber
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -22,9 +25,15 @@ object CalendarPickerReducer : BaseViewStateReducer<CalendarPickerViewState>() {
         state: AppState,
         subState: CalendarPickerViewState,
         action: Action
-    ): CalendarPickerViewState {
-        return subState
-    }
+    ) =
+        when (action) {
+            is DataLoadedAction.CalendarsChanged -> {
+                Timber.d("AAA ${action.calendars}")
+                CalendarPickerViewState.CalendarsLoaded(action.calendars.filter { it.isVisible })
+            }
+            else ->
+                subState
+        }
 
     override fun defaultState() = CalendarPickerViewState.Loading
 }
@@ -32,5 +41,6 @@ object CalendarPickerReducer : BaseViewStateReducer<CalendarPickerViewState>() {
 sealed class CalendarPickerViewState : ViewState {
 
     object Loading : CalendarPickerViewState()
+    data class CalendarsLoaded(val calendars: List<Calendar>) : CalendarPickerViewState()
 }
 

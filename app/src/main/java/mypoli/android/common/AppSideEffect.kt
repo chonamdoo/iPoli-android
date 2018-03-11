@@ -534,7 +534,6 @@ class LoadAllDataSideEffect : AppSideEffect() {
     private val playerRepository by required { playerRepository }
     private val questRepository by required { questRepository }
     private val challengeRepository by required { challengeRepository }
-    private val eventRepository by required { eventRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val findNextDateForRepeatingQuestUseCase by required { findNextDateForRepeatingQuestUseCase }
     private val findPeriodProgressForRepeatingQuestUseCase by required { findPeriodProgressForRepeatingQuestUseCase }

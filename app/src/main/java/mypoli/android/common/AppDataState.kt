@@ -4,6 +4,7 @@ import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.redux.Action
 import mypoli.android.common.redux.Reducer
 import mypoli.android.common.redux.State
+import mypoli.android.event.Calendar
 import mypoli.android.event.Event
 import mypoli.android.player.Player
 import mypoli.android.quest.Quest
@@ -43,6 +44,7 @@ sealed class DataLoadedAction : Action {
     ) : DataLoadedAction()
 
     data class EventsChanged(val events: List<Event>) : DataLoadedAction()
+    data class CalendarsChanged(val calendars: List<Calendar>) : DataLoadedAction()
 }
 
 data class AppDataState(

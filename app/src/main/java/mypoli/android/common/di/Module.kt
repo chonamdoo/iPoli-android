@@ -27,7 +27,10 @@ import mypoli.android.common.view.CurrencyConverterPresenter
 import mypoli.android.common.view.IconPickerDialogPresenter
 import mypoli.android.common.view.PetMessagePresenter
 import mypoli.android.event.persistence.AndroidCalendarEventRepository
+import mypoli.android.event.persistence.AndroidCalendarRepository
+import mypoli.android.event.persistence.CalendarRepository
 import mypoli.android.event.persistence.EventRepository
+import mypoli.android.event.sideeffect.CalendarSideEffect
 import mypoli.android.pet.AndroidJobLowerPetStatsScheduler
 import mypoli.android.pet.LowerPetStatsScheduler
 import mypoli.android.pet.PetDialogPresenter
@@ -85,6 +88,7 @@ interface RepositoryModule {
     val repeatingQuestRepository: RepeatingQuestRepository
     val challengeRepository: ChallengeRepository
     val eventRepository: EventRepository
+    val calendarRepository: CalendarRepository
 }
 
 class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
@@ -125,6 +129,10 @@ class FirestoreRepositoryModule : RepositoryModule, Injects<Module> {
 
     override val eventRepository by required {
         AndroidCalendarEventRepository()
+    }
+
+    override val calendarRepository by required {
+        AndroidCalendarRepository()
     }
 
 }
@@ -446,7 +454,6 @@ class AndroidPresenterModule : PresenterModule, Injects<Module> {
 
     private val questRepository by required { questRepository }
     private val playerRepository by required { playerRepository }
-    private val saveQuestUseCase by required { saveQuestUseCase }
     private val listenForPlayerChangesUseCase by required { listenForPlayerChangesUseCase }
     private val revivePetUseCase by required { revivePetUseCase }
     private val feedPetUseCase by required { feedPetUseCase }
@@ -472,7 +479,6 @@ class AndroidPresenterModule : PresenterModule, Injects<Module> {
     private val addPomodoroUseCase by required { addPomodoroUseCase }
     private val removePomodoroUseCase by required { removePomodoroUseCase }
     private val addTimerToQuestUseCase by required { addTimerToQuestUseCase }
-    private val saveRepeatingQuestUseCase by required { saveRepeatingQuestUseCase }
     private val job by required { job }
     override val reminderPickerPresenter
         get() = ReminderPickerDialogPresenter(
@@ -591,7 +597,8 @@ class AndroidStateStoreModule : StateStoreModule, Injects<Module> {
                 DayViewSideEffect(),
                 RepeatingQuestSideEffect(),
                 AddQuestSideEffect(),
-                ChallengeSideEffect()
+                ChallengeSideEffect(),
+                CalendarSideEffect()
             ),
             sideEffectExecutor = CoroutineSideEffectExecutor(job + CommonPool)
         )

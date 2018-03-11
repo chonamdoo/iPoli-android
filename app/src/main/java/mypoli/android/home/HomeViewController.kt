@@ -192,6 +192,8 @@ class HomeViewController(args: Bundle? = null) :
                     .popChangeHandler(fadeChangeHandler)
             )
 
+//            CalendarPickerDialogController(pickedCalendarsListener = {}).showDialog(router)
+
 //            childRouter.pushController(
 //                RouterTransaction.with(ChallengeListViewController())
 //                    .pushChangeHandler(fadeChangeHandler)

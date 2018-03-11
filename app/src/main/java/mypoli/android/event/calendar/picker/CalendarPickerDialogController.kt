@@ -1,5 +1,6 @@
 package mypoli.android.event.calendar.picker
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -8,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_calendar_picker.view.*
+import kotlinx.android.synthetic.main.item_calendar_picker.view.*
 import mypoli.android.R
 import mypoli.android.common.view.ReduxDialogController
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
+import mypoli.android.event.Calendar
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -38,7 +41,7 @@ class CalendarPickerDialogController :
         savedViewState: Bundle?
     ): AlertDialog {
         return dialogBuilder
-            .setPositiveButton("OK") { _, _ -> pickedCalendarsListener(listOf()) }
+            .setPositiveButton("SYNC SELECTED") { _, _ -> pickedCalendarsListener(listOf()) }
             .create()
     }
 
@@ -47,16 +50,20 @@ class CalendarPickerDialogController :
 
         view.calendarList.layoutManager = LinearLayoutManager(activity!!)
         view.calendarList.setHasFixedSize(true)
+        view.calendarList.adapter = CalendarAdapter()
 
         return view
     }
 
     override fun render(state: CalendarPickerViewState, view: View) {
+        when (state) {
+            is CalendarPickerViewState.CalendarsLoaded -> {
+                (view.calendarList.adapter as CalendarAdapter).updateAll(state.calendars)
+            }
+        }
     }
 
-    data class CalendarViewModel(val name: String, val color: Int, val isSelected: Boolean)
-
-    inner class CalendarAdapter(private var viewModels: List<CalendarViewModel> = listOf()) :
+    inner class CalendarAdapter(private var viewModels: List<Calendar> = listOf()) :
         RecyclerView.Adapter<SimpleViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -69,10 +76,15 @@ class CalendarPickerDialogController :
             )
 
         override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
+            val vm = viewModels[position]
+            val view = holder.itemView
 
+            view.calendarName.text = vm.name
+
+            view.calendarColor.backgroundTintList = ColorStateList.valueOf(vm.color)
         }
 
-        fun updateAll(viewModels: List<CalendarViewModel>) {
+        fun updateAll(viewModels: List<Calendar>) {
             this.viewModels = viewModels
             notifyDataSetChanged()
         }
