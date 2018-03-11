@@ -88,6 +88,7 @@ object TestUtil {
         color = Color.BLUE,
         icon = Icon.STAR,
         difficulty = Challenge.Difficulty.NORMAL,
-        end = LocalDate.now()
+        end = LocalDate.now(),
+        motivations = listOf()
     )
 }
