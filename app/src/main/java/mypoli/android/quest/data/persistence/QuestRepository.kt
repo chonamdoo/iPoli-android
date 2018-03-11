@@ -85,6 +85,7 @@ data class DbQuest(override val map: MutableMap<String, Any?> = mutableMapOf()) 
     var timeRanges: List<MutableMap<String, Any?>> by map
     var timeRangeCount: Int by map
     var repeatingQuestId: String? by map
+    var challengeId: String? by map
     override var createdAt: Long by map
     override var updatedAt: Long by map
     override var removedAt: Long? by map
@@ -429,7 +430,8 @@ class FirestoreQuestRepository(
                     ctr.end?.instant
                 )
             },
-            repeatingQuestId = cq.repeatingQuestId
+            repeatingQuestId = cq.repeatingQuestId,
+            challengeId = cq.challengeId
         )
     }
 
@@ -469,6 +471,7 @@ class FirestoreQuestRepository(
         }
         q.timeRangeCount = q.timeRanges.size
         q.repeatingQuestId = entity.repeatingQuestId
+        q.challengeId = entity.challengeId
         return q
     }
 

@@ -46,6 +46,7 @@ class FirestoreChallengeRepository(
             },
             difficulty = Challenge.Difficulty.valueOf(c.difficulty),
             end = c.end.startOfDayUTC,
+            motivations = c.motivations,
             experience = c.experience?.toInt(),
             coins = c.coins?.toInt(),
             completedAtDate = c.completedAtDate?.startOfDayUTC,
@@ -65,6 +66,7 @@ class FirestoreChallengeRepository(
         c.icon = entity.icon?.name
         c.difficulty = entity.difficulty.name
         c.end = entity.end.startOfDayUTC()
+        c.motivations = entity.motivations
         c.experience = entity.experience?.toLong()
         c.coins = entity.coins?.toLong()
         c.completedAtDate = entity.completedAtDate?.startOfDayUTC()
@@ -82,6 +84,7 @@ data class DbChallenge(override val map: MutableMap<String, Any?> = mutableMapOf
     var icon: String? by map
     var difficulty: String by map
     var end: Long by map
+    var motivations: List<String> by map
     var experience: Long? by map
     var coins: Long? by map
     var completedAtDate: Long? by map
