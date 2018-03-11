@@ -5,7 +5,8 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.datetime.datesBetween
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
-import mypoli.android.quest.Color
+import mypoli.android.quest.*
+import mypoli.android.repeatingquest.entity.RepeatingPattern
 import org.threeten.bp.LocalDate
 import java.util.*
 
@@ -36,7 +37,38 @@ object ChallengeReducer : BaseViewStateReducer<ChallengeViewState>() {
                     xAxisLabelCount = 5,
                     chartData = LocalDate.now().minusDays(30).datesBetween(LocalDate.now()).map {
                         it to 5
-                    }.toMap().toSortedMap()
+                    }.toMap().toSortedMap(),
+                    quests = listOf(
+                        Quest(
+                            id = "1",
+                            name = "Run",
+                            color = Color.GREEN,
+                            icon = Icon.PIZZA,
+                            category = Category("WELLNESS", Color.GREEN),
+                            duration = 30,
+                            reminder = null,
+                            scheduledDate = LocalDate.now()
+                        ),
+                        Quest(
+                            id = "2",
+                            name = "Runing",
+                            color = Color.ORANGE,
+                            icon = Icon.MONEY,
+                            category = Category("WELLNESS", Color.GREEN),
+                            duration = 60,
+                            reminder = null,
+                            scheduledDate = LocalDate.now().plusDays(1)
+                        ),
+                        RepeatingQuest(
+                            id = "3",
+                            name = "Runinja",
+                            color = Color.BLUE_GREY,
+                            icon = Icon.RESTAURANT,
+                            category = Category("WELLNESS", Color.GREEN),
+                            duration = 20,
+                            repeatingPattern = RepeatingPattern.Daily()
+                        )
+                    )
                 )
             }
             else -> subState
@@ -60,6 +92,7 @@ sealed class ChallengeViewState(open val id: String) : ViewState {
         val totalCount: Int,
         val progressPercent: Int,
         val xAxisLabelCount: Int,
-        val chartData: SortedMap<LocalDate, Int>
+        val chartData: SortedMap<LocalDate, Int>,
+        val quests: List<BaseQuest>
     ) : ChallengeViewState(id)
 }

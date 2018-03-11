@@ -1,7 +1,12 @@
 package mypoli.android.challenge.show
 
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.support.annotation.ColorRes
 import android.support.design.widget.AppBarLayout
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +22,10 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.mikepenz.google_material_typeface_library.GoogleMaterial
 import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import kotlinx.android.synthetic.main.controller_challenge.view.*
+import kotlinx.android.synthetic.main.item_challenge_quest.view.*
 import mypoli.android.MainActivity
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
@@ -26,6 +33,8 @@ import mypoli.android.common.ViewUtils
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.*
+import mypoli.android.quest.Quest
+import mypoli.android.quest.RepeatingQuest
 import mypoli.android.repeatingquest.show.RepeatingQuestViewController
 
 
@@ -66,6 +75,10 @@ class ChallengeViewController(args: Bundle? = null) :
         setupAppBar(view)
 
         setupHistoryChart(view.progressChart)
+
+        view.questList.layoutManager =
+            LinearLayoutManager(container.context, LinearLayoutManager.VERTICAL, false)
+        view.questList.adapter = QuestAdapter()
 
         view.addQuests.setOnClickListener {
             val changeHandler = FadeChangeHandler()
@@ -185,10 +198,15 @@ class ChallengeViewController(args: Bundle? = null) :
                 )
 
                 renderChart(state, view)
+                renderQuests(state, view)
             }
             else -> {
             }
         }
+
+    private fun renderQuests(state: ChallengeViewState.Changed, view: View) {
+        (view.questList.adapter as QuestAdapter).updateAll(state.questViewModels)
+    }
 
     private fun renderChart(state: ChallengeViewState.Changed, view: View) {
         view.progressChart.xAxis.setLabelCount(state.xAxisLabelCount, true)
@@ -239,6 +257,51 @@ class ChallengeViewController(args: Bundle? = null) :
         view.name.text = name
     }
 
+    data class QuestViewModel(
+        val id: String,
+        val name: String,
+        @ColorRes val color: Int,
+        val icon: IIcon,
+        val isRepeating: Boolean
+    )
+
+    inner class QuestAdapter(private var viewModels: List<QuestViewModel> = listOf()) :
+        RecyclerView.Adapter<ViewHolder>() {
+        override fun getItemCount() = viewModels.size
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val vm = viewModels[position]
+            val view = holder.itemView
+            view.questName.text = vm.name
+            view.questIcon.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(view.context, vm.color))
+            view.questIcon.setImageDrawable(
+                IconicsDrawable(view.context)
+                    .icon(vm.icon)
+                    .colorRes(R.color.md_white)
+                    .sizeDp(22)
+            )
+            view.questRepeatIndicator.visible = vm.isRepeating
+        }
+
+        fun updateAll(viewModels: List<QuestViewModel>) {
+            this.viewModels = viewModels
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            ViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_challenge_quest,
+                    parent,
+                    false
+                )
+            )
+
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
     private val ChallengeViewState.Changed.xAxisLabels
         get() = chartData.keys.map {
             DateFormatter.formatWithoutYear(activity!!, it)
@@ -257,5 +320,26 @@ class ChallengeViewController(args: Bundle? = null) :
 
     private val ChallengeViewState.Changed.progressText
         get() = "$completedCount of $totalCount ($progressPercent%) done"
+
+    private val ChallengeViewState.Changed.questViewModels
+        get() = quests.map {
+            when (it) {
+                is Quest -> QuestViewModel(
+                    id = it.id,
+                    name = it.name,
+                    color = it.color.androidColor.color500,
+                    icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
+                    isRepeating = false
+                )
+                is RepeatingQuest -> QuestViewModel(
+                    id = it.id,
+                    name = it.name,
+                    color = it.color.androidColor.color500,
+                    icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
+                    isRepeating = true
+                )
+            }
+
+        }
 
 }
