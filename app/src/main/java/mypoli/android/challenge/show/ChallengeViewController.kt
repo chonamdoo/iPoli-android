@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.annotation.ColorRes
 import android.support.design.widget.AppBarLayout
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -261,8 +260,10 @@ class ChallengeViewController(args: Bundle? = null) :
         val id: String,
         val name: String,
         @ColorRes val color: Int,
+        @ColorRes val textColor: Int,
         val icon: IIcon,
-        val isRepeating: Boolean
+        val isRepeating: Boolean,
+        val isCompleted: Boolean
     )
 
     inner class QuestAdapter(private var viewModels: List<QuestViewModel> = listOf()) :
@@ -273,8 +274,10 @@ class ChallengeViewController(args: Bundle? = null) :
             val vm = viewModels[position]
             val view = holder.itemView
             view.questName.text = vm.name
+            view.questName.setTextColor(colorRes(vm.textColor))
+
             view.questIcon.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(view.context, vm.color))
+                ColorStateList.valueOf(colorRes(vm.color))
             view.questIcon.setImageDrawable(
                 IconicsDrawable(view.context)
                     .icon(vm.icon)
@@ -327,16 +330,20 @@ class ChallengeViewController(args: Bundle? = null) :
                 is Quest -> QuestViewModel(
                     id = it.id,
                     name = it.name,
-                    color = it.color.androidColor.color500,
+                    color = if (it.isCompleted) R.color.md_grey_300 else it.color.androidColor.color500,
+                    textColor = if (it.isCompleted) R.color.md_dark_text_26 else R.color.md_dark_text_54,
                     icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
-                    isRepeating = false
+                    isRepeating = false,
+                    isCompleted = it.isCompleted
                 )
                 is RepeatingQuest -> QuestViewModel(
                     id = it.id,
                     name = it.name,
                     color = it.color.androidColor.color500,
+                    textColor = if (it.isCompleted) R.color.md_dark_text_26 else R.color.md_dark_text_54,
                     icon = it.icon?.androidIcon?.icon ?: GoogleMaterial.Icon.gmd_local_florist,
-                    isRepeating = true
+                    isRepeating = true,
+                    isCompleted = it.isCompleted
                 )
             }
 
