@@ -301,8 +301,7 @@ abstract class ReduxDialogController<A : Action, VS : ViewState, out R : ViewSta
     }
 
     companion object {
-
-        private val SAVED_DIALOG_STATE_TAG = "android:savedDialogState"
+        private const val SAVED_DIALOG_STATE_TAG = "android:savedDialogState"
     }
 }
 
