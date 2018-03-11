@@ -74,7 +74,10 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                 subState.copy(
                     type = CHANGE_PAGE,
                     adapterPosition = subState.adapterPosition + 1,
-                    quests = s.allQuests.filter { s.selectedQuests.contains(it.id) }.map { it.baseQuest }
+                    allQuests = s.allQuests.map {
+                        it.baseQuest
+                    },
+                    selectedQuestIds = s.selectedQuests
                 )
             }
 
@@ -92,6 +95,11 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
                 }
             }
 
+            AddChallengeSummaryAction.Save ->
+                subState.copy(
+                    type = CLOSE
+                )
+
             else -> subState
     }
 
@@ -105,7 +113,8 @@ object AddChallengeReducer : BaseViewStateReducer<AddChallengeViewState> () {
             difficulty = Challenge.Difficulty.NORMAL,
             end = LocalDate.now(),
             motivationList = listOf(),
-            quests = listOf()
+            allQuests = listOf(),
+            selectedQuestIds = setOf()
         )
 }
 
@@ -119,7 +128,8 @@ data class AddChallengeViewState(
     val difficulty: Challenge.Difficulty,
     val end: LocalDate,
     val motivationList: List<String>,
-    val quests: List<BaseQuest>
+    val allQuests: List<BaseQuest>,
+    val selectedQuestIds: Set<String>
 ) : ViewState {
     enum class StateType {
         INITIAL,

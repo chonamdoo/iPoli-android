@@ -34,14 +34,16 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
                         color = Color.RED,
                         icon = Icon.HEART,
                         difficulty = Challenge.Difficulty.HELL,
-                        end = LocalDate.now().plusWeeks(1)
+                        end = LocalDate.now().plusWeeks(1),
+                        motivations = listOf("test")
                     ),
                     Challenge(
                         name = "Run 5k marathon",
                         color = Color.GREEN,
                         icon = Icon.RUN,
                         difficulty = Challenge.Difficulty.HELL,
-                        end = LocalDate.now().plusWeeks(1)
+                        end = LocalDate.now().plusWeeks(1),
+                        motivations = listOf("test")
                     )
                 )
             )

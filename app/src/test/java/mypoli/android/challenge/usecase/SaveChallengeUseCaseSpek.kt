@@ -33,7 +33,8 @@ class SaveChallengeUseCaseSpek : Spek({
                             difficulty = Challenge.Difficulty.NORMAL,
                             end = LocalDate.now(),
                             allQuests = listOf(),
-                            selectedQuestIds = setOf()
+                            selectedQuestIds = setOf(),
+                            motivations = listOf()
                         )
                     )
                 }

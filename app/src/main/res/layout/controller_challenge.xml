@@ -325,6 +325,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="320dp" />
 
+            <TextView
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:text="Quests"
+                android:textColor="?attr/colorAccent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/questList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

@@ -2,6 +2,9 @@ package mypoli.android.challenge.sideeffect
 
 import mypoli.android.challenge.QuestPickerAction
 import mypoli.android.challenge.QuestPickerViewState
+import mypoli.android.challenge.add.AddChallengeSummaryAction
+import mypoli.android.challenge.add.AddChallengeViewState
+import mypoli.android.challenge.usecase.SaveChallengeUseCase
 import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
 import mypoli.android.common.AppSideEffect
 import mypoli.android.common.AppState
@@ -19,6 +22,7 @@ class ChallengeSideEffect : AppSideEffect() {
     private val questRepository by required { questRepository }
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val saveQuestsForChallengeUseCase by required { saveQuestsForChallengeUseCase }
+    private val saveChallengeUseCase by required { saveChallengeUseCase }
 
     override suspend fun doExecute(action: Action, state: AppState) {
         when (action) {
@@ -42,11 +46,28 @@ class ChallengeSideEffect : AppSideEffect() {
                     )
                 )
             }
+
+            is AddChallengeSummaryAction.Save -> {
+                val s = state.stateFor(AddChallengeViewState::class.java)
+                saveChallengeUseCase.execute(
+                    SaveChallengeUseCase.Params(
+                        name = s.name,
+                        color = s.color,
+                        icon = s.icon,
+                        difficulty = s.difficulty,
+                        end = s.end,
+                        motivations = s.motivationList,
+                        allQuests = s.allQuests,
+                        selectedQuestIds = s.selectedQuestIds
+                    )
+                )
+            }
         }
 
     }
 
     override fun canHandle(action: Action) =
         action is QuestPickerAction
+            || action is AddChallengeSummaryAction
 
 }

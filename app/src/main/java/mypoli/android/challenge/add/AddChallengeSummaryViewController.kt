@@ -32,7 +32,9 @@ import org.threeten.bp.LocalDate
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
  * on 3/10/18.
  */
-sealed class AddChallengeSummaryAction : Action
+sealed class AddChallengeSummaryAction : Action {
+    object Save : AddChallengeSummaryAction()
+}
 
 object AddChallengeSummaryReducer : BaseViewStateReducer<AddChallengeSummaryViewState>() {
     override val stateKey = key<AddChallengeSummaryViewState>()
@@ -54,7 +56,7 @@ object AddChallengeSummaryReducer : BaseViewStateReducer<AddChallengeSummaryView
                 motivation1 = if (motivationList.isNotEmpty()) motivationList[0] else "",
                 motivation2 = if (motivationList.size > 1) motivationList[1] else "",
                 motivation3 = if (motivationList.size > 2) motivationList[2] else "",
-                quests = s.quests
+                quests = s.allQuests.filter { s.selectedQuestIds.contains(it.id) }
             )
         }
 
@@ -107,6 +109,7 @@ class AddChallengeSummaryViewController(args: Bundle? = null) :
         view.challengeQuests.layoutManager =
             LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
         view.challengeQuests.adapter = QuestAdapter()
+        view.challengeAccept.dispatchOnClick(AddChallengeSummaryAction.Save)
         return view
     }
 

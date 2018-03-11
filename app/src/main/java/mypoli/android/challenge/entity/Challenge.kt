@@ -18,6 +18,7 @@ data class Challenge(
     val icon: Icon? = null,
     val difficulty: Difficulty,
     val end: LocalDate,
+    val motivations: List<String>,
     val experience: Int? = null,
     val coins: Int? = null,
     val completedAtDate: LocalDate? = null,

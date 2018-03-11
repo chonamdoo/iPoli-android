@@ -35,6 +35,7 @@ data class DbRepeatingQuest(override val map: MutableMap<String, Any?> = mutable
     var duration: Int by map
     var reminder: MutableMap<String, Any?>? by map
     var repeatingPattern: MutableMap<String, Any?> by map
+    var challengeId: String? by map
     override var createdAt: Long by map
     override var updatedAt: Long by map
     override var removedAt: Long? by map
@@ -105,6 +106,7 @@ class FirestoreRepeatingQuestRepository(
                 Reminder(cr.message, Time.of(cr.minute), cr.date?.startOfDayUTC)
             },
             repeatingPattern = createRepeatingPattern(DbRepeatingPattern(rq.repeatingPattern)),
+            challengeId = rq.challengeId,
             createdAt = rq.createdAt.instant,
             updatedAt = rq.updatedAt.instant
         )
@@ -181,6 +183,7 @@ class FirestoreRepeatingQuestRepository(
             createDbReminder(it).map
         }
         rq.repeatingPattern = createDbRepeatingPattern(entity.repeatingPattern).map
+        rq.challengeId = entity.challengeId
         return rq
     }
 

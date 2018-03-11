@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.controller_challenge_list.view.*
 import kotlinx.android.synthetic.main.item_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
+import mypoli.android.challenge.show.ChallengeViewController
 import mypoli.android.common.datetime.daysUntil
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
@@ -118,6 +119,14 @@ class ChallengeListViewController(args: Bundle? = null) :
 
             view.cNext.text = vm.next
             view.cEnd.text = vm.end
+            view.setOnClickListener {
+                val changeHandler = FadeChangeHandler()
+                rootRouter.pushController(
+                    RouterTransaction.with(ChallengeViewController(vm.id))
+                        .pushChangeHandler(changeHandler)
+                        .popChangeHandler(changeHandler)
+                )
+            }
         }
 
         override fun getItemCount() = viewModels.size
