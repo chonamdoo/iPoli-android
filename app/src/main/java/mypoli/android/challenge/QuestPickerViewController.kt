@@ -37,7 +37,6 @@ class QuestPickerViewController(args: Bundle? = null) :
     ): View {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.controller_quest_picker, null)
-        view.toolbar.visibility = View.GONE
         setToolbar(view.toolbar)
         toolbarTitle = "Choose quests"
         view.questList.layoutManager =
@@ -79,6 +78,7 @@ class QuestPickerViewController(args: Bundle? = null) :
 
             R.id.actionSave -> {
                 dispatch(QuestPickerAction.Save)
+                router.popCurrentController()
                 true
             }
             else -> super.onOptionsItemSelected(item)

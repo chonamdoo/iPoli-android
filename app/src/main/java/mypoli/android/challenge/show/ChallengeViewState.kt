@@ -39,15 +39,14 @@ object ChallengeReducer : BaseViewStateReducer<ChallengeViewState>() {
                         it to 5
                     }.toMap().toSortedMap(),
                     quests = listOf(
-                        Quest(
-                            id = "1",
-                            name = "Run",
-                            color = Color.GREEN,
-                            icon = Icon.PIZZA,
+                        RepeatingQuest(
+                            id = "3",
+                            name = "Runinja",
+                            color = Color.BLUE_GREY,
+                            icon = Icon.RESTAURANT,
                             category = Category("WELLNESS", Color.GREEN),
-                            duration = 30,
-                            reminder = null,
-                            scheduledDate = LocalDate.now()
+                            duration = 20,
+                            repeatingPattern = RepeatingPattern.Daily()
                         ),
                         Quest(
                             id = "2",
@@ -59,14 +58,16 @@ object ChallengeReducer : BaseViewStateReducer<ChallengeViewState>() {
                             reminder = null,
                             scheduledDate = LocalDate.now().plusDays(1)
                         ),
-                        RepeatingQuest(
-                            id = "3",
-                            name = "Runinja",
-                            color = Color.BLUE_GREY,
-                            icon = Icon.RESTAURANT,
+                        Quest(
+                            id = "1",
+                            name = "Run",
+                            color = Color.GREEN,
+                            icon = Icon.PIZZA,
                             category = Category("WELLNESS", Color.GREEN),
-                            duration = 20,
-                            repeatingPattern = RepeatingPattern.Daily()
+                            duration = 30,
+                            reminder = null,
+                            scheduledDate = LocalDate.now(),
+                            completedAtDate = LocalDate.now()
                         )
                     )
                 )
