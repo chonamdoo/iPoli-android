@@ -18,6 +18,7 @@ data class Event(
     val duration: Duration<Minute>,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val color: Int,
     override val createdAt: Instant = Instant.now(),
     override val updatedAt: Instant = Instant.now()
 ) : Entity {

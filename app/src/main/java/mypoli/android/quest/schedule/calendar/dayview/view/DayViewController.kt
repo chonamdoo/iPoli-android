@@ -513,7 +513,7 @@ class DayViewController :
             override val startMinute: Int,
             val startTime: String,
             val endTime: String,
-            val backgroundColor: AndroidColor
+            val backgroundColor: Int
         ) : ScheduledEventViewModel()
     }
 
@@ -542,8 +542,10 @@ class DayViewController :
             view: View,
             vm: ScheduledEventViewModel.Event
         ) {
+            view.checkBox.gone()
+
             view.questSchedule.text = "${vm.startTime} - ${vm.endTime}"
-            view.backgroundView.setBackgroundColor(colorRes(vm.backgroundColor.color600))
+            view.backgroundView.setBackgroundColor(vm.backgroundColor)
 
             view.questName.text = vm.name
 
@@ -555,6 +557,9 @@ class DayViewController :
             view: View,
             vm: ScheduledEventViewModel.Quest
         ) {
+
+            view.checkBox.visible()
+
             view.setOnLongClickListener {
 
                 if (vm.isStarted) {
@@ -907,7 +912,7 @@ class DayViewController :
                     startMinute = e.startTime.toMinuteOfDay(),
                     startTime = e.startTime.toString(),
                     endTime = e.endTime.toString(),
-                    backgroundColor = AndroidColor.INDIGO
+                    backgroundColor = e.color
                 )
             }
 

@@ -192,11 +192,11 @@ class HomeViewController(args: Bundle? = null) :
                     .popChangeHandler(fadeChangeHandler)
             )
 
-            childRouter.pushController(
-                RouterTransaction.with(ChallengeListViewController())
-                    .pushChangeHandler(fadeChangeHandler)
-                    .popChangeHandler(fadeChangeHandler)
-            )
+//            childRouter.pushController(
+//                RouterTransaction.with(ChallengeListViewController())
+//                    .pushChangeHandler(fadeChangeHandler)
+//                    .popChangeHandler(fadeChangeHandler)
+//            )
         }
     }
 
