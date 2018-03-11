@@ -34,7 +34,7 @@ class AndroidCalendarEventRepository : EventRepository {
 
     companion object {
 
-        val GOOGLE_CALENDAR_COLOR_MAPPING = mapOf(
+        private val GOOGLE_CALENDAR_COLOR_MAPPING = mapOf(
             -509406 to -2818048,
             -509406 to -2818048,
             -370884 to -765666,
@@ -104,7 +104,8 @@ class AndroidCalendarEventRepository : EventRepository {
             Instances.EVENT_LOCATION,
             Instances.DURATION,
             Instances.CALENDAR_TIME_ZONE,
-            Instances.DISPLAY_COLOR
+            Instances.DISPLAY_COLOR,
+            Instances.RRULE
         )
 
         fun getDisplayColor(color: Int): Int {
@@ -136,6 +137,7 @@ class AndroidCalendarEventRepository : EventRepository {
         private const val PROJECTION_DURATION_INDEX = 7
         private const val PROJECTION_TIME_ZONE_INDEX = 8
         private const val PROJECTION_DISPLAY_COLOR = 9
+        private const val PROJECTION_RRULE = 10
     }
 
     override fun findScheduledBetween(
@@ -178,6 +180,7 @@ class AndroidCalendarEventRepository : EventRepository {
         val eventStartTime = Time.of(cursor.getInt(PROJECTION_START_MIN_INDEX))
         val eventEndTime = Time.of(cursor.getInt(PROJECTION_END_MIN_INDEX))
         val tz = ZoneId.of(cursor.getString(PROJECTION_TIME_ZONE_INDEX))
+        val rRule = cursor.getString(PROJECTION_RRULE)
         return Event(
             id = cursor.getString(PROJECTION_ID_INDEX),
             name = cursor.getString(PROJECTION_TITLE_INDEX),
@@ -185,7 +188,8 @@ class AndroidCalendarEventRepository : EventRepository {
             duration = (eventEndTime - eventStartTime).toMinuteOfDay().minutes,
             startDate = cursor.getLong(PROJECTION_BEGIN_INDEX).instant.atZone(tz).toLocalDate(),
             endDate = cursor.getLong(PROJECTION_END_INDEX).instant.atZone(tz).toLocalDate(),
-            color = getDisplayColor(cursor.getInt(PROJECTION_DISPLAY_COLOR))
+            color = getDisplayColor(cursor.getInt(PROJECTION_DISPLAY_COLOR)),
+            isRepeating = rRule != null && rRule.isNotEmpty()
         )
     }
 

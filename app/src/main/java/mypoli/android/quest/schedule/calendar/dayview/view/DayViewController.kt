@@ -513,7 +513,8 @@ class DayViewController :
             override val startMinute: Int,
             val startTime: String,
             val endTime: String,
-            val backgroundColor: Int
+            val backgroundColor: Int,
+            val isRepeating: Boolean
         ) : ScheduledEventViewModel()
     }
 
@@ -551,6 +552,8 @@ class DayViewController :
 
             view.questSchedule.setTextColor(colorRes(R.color.md_light_text_87))
             view.questName.setTextColor(colorRes(R.color.md_white))
+
+            view.repeatIndicator.visible = vm.isRepeating
         }
 
         private fun showQuest(
@@ -912,7 +915,8 @@ class DayViewController :
                     startMinute = e.startTime.toMinuteOfDay(),
                     startTime = e.startTime.toString(),
                     endTime = e.endTime.toString(),
-                    backgroundColor = e.color
+                    backgroundColor = e.color,
+                    isRepeating = e.isRepeating
                 )
             }
 
