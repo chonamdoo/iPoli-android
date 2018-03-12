@@ -117,10 +117,10 @@ class RepeatingQuestViewController(args: Bundle? = null) :
 
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
-            android.R.id.home -> {
-                router.popCurrentController()
-                true
-            }
+
+            android.R.id.home ->
+                router.handleBack()
+
             R.id.actionEdit -> {
                 val changeHandler = FadeChangeHandler()
                 rootRouter.pushController(

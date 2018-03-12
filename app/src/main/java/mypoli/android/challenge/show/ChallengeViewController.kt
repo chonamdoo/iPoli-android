@@ -6,9 +6,7 @@ import android.support.annotation.ColorRes
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import com.github.mikephil.charting.animation.Easing
@@ -28,6 +26,7 @@ import kotlinx.android.synthetic.main.item_challenge_quest.view.*
 import mypoli.android.MainActivity
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
+import mypoli.android.challenge.edit.EditChallengeViewController
 import mypoli.android.common.ViewUtils
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
@@ -47,13 +46,6 @@ class ChallengeViewController(args: Bundle? = null) :
     override val reducer = ChallengeReducer
 
     private lateinit var challengeId: String
-
-//    private val yData = createYData()
-//
-//    private fun createYData() =
-//        (0 until 30).map {
-//            getRandom(5f, 0f)
-//        }
 
     constructor(
         challengeId: String
@@ -110,10 +102,6 @@ class ChallengeViewController(args: Bundle? = null) :
         })
     }
 
-    protected fun getRandom(range: Float, startsfrom: Float): Int {
-        return ((Math.random() * range).toFloat() + startsfrom).toInt()
-    }
-
     private fun setupHistoryChart(chart: LineChart) {
         with(chart) {
             description = null
@@ -146,6 +134,33 @@ class ChallengeViewController(args: Bundle? = null) :
     }
 
     override fun onCreateLoadAction() = ChallengeAction.Load(challengeId)
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.challenge_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
+
+            android.R.id.home ->
+                router.handleBack()
+
+            R.id.actionEdit -> {
+                val changeHandler = FadeChangeHandler()
+                rootRouter.pushController(
+                    RouterTransaction.with(EditChallengeViewController(challengeId))
+                        .pushChangeHandler(changeHandler)
+                        .popChangeHandler(changeHandler)
+                )
+                true
+            }
+            R.id.actionDelete -> {
+                dispatch(ChallengeAction.Remove(challengeId))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
