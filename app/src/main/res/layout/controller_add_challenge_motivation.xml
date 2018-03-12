@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             style="@style/ChallengeWhiteEditText"
-            android:hint="1st reason" />
+            android:hint="@string/add_challenge_motivation1_hint" />
 
         <EditText
             android:id="@+id/motivation2"
@@ -38,7 +38,7 @@
             android:layout_marginEnd="48dp"
             android:layout_marginStart="48dp"
             android:layout_marginTop="32dp"
-            android:hint="2nd reason"
+            android:hint="@string/add_challenge_motivation2_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.104"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
             android:layout_marginEnd="48dp"
             android:layout_marginStart="48dp"
             android:layout_marginTop="32dp"
-            android:hint="3rd reason"
+            android:hint="@string/add_challenge_motivation3_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.156"
             app:layout_constraintStart_toStartOf="parent"

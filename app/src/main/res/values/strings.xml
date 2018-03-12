@@ -315,6 +315,9 @@
     <string name="add_challenge_reason1_hint">1st reason</string>
     <string name="add_challenge_reason2_hint">2nd reason</string>
     <string name="add_challenge_reason3_hint">3rd reason</string>
+    <string name="add_challenge_motivation1_hint">1st motivation</string>
+    <string name="add_challenge_motivation2_hint">2nd motivation</string>
+    <string name="add_challenge_motivation3_hint">3rd motivation</string>
     <string name="title_fragment_wizard_challenge_reasons">Why will you do it?</string>
     <string name="title_fragment_wizard_challenge_end_date">Achieve it in</string>
     <string name="one_month">1 month</string>
@@ -1167,4 +1170,5 @@
     <string name="ends_at_date">Ends at %s</string>
     <string name="calendar_picker_title">Which Calendars to sync?</string>
     <string name="sync_selected">Sync selected</string>
+    <string name="challenge_motivations_question">Motivate yourself</string>
 </resources>

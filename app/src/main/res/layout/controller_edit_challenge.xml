@@ -211,7 +211,7 @@
                         android:id="@+id/challengeDifficultyValue"
                         style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="wra"
                         android:entries="@array/difficulties"/>
 
                     <!--<TextView-->

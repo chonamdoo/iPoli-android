@@ -100,8 +100,12 @@ class EditChallengeViewController(args : Bundle? = null) :
                 renderEndDate(view, state)
             }
 
+            MOTIVATIONS_CHANGED -> {
+                renderMotivations(view, state)
+            }
+
             VALIDATION_ERROR_EMPTY_NAME -> {
-                view.challengeTextLayout.error = "Think of a name"
+                view.challengeName.error = "Think of a name"
             }
 
             VALIDATION_SUCCESSFUL -> {
@@ -211,6 +215,17 @@ class EditChallengeViewController(args : Bundle? = null) :
             view.challengeMotivation3Value.text = state.motivation3
         } else {
             view.challengeMotivation3Value.visibility = View.GONE
+        }
+
+        view.challengeMotivationsContainer.setOnClickListener {
+            ChallengeMotivationsDialogController(
+                state.motivation1,
+                state.motivation2,
+                state.motivation3,
+                { m1, m2, m3 ->
+                    dispatch(EditChallengeAction.ChangeMotivations(m1, m2, m3))
+                }
+            ).showDialog(router, "motivations")
         }
     }
 

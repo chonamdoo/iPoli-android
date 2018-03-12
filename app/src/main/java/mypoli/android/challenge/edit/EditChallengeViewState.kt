@@ -20,6 +20,11 @@ sealed class EditChallengeAction : Action {
     data class ChangeIcon(val icon: Icon?) : EditChallengeAction()
     data class ChangeColor(val color: Color) : EditChallengeAction()
     data class ChangeEndDate(val date: LocalDate) : EditChallengeAction()
+    data class ChangeMotivations(
+        val motivation1: String,
+        val motivation2: String,
+        val motivation3: String
+    ) : EditChallengeAction()
     data class Validate(val name: String, val selectedDifficultyPosition: Int) :
         EditChallengeAction()
 
@@ -85,6 +90,19 @@ object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
                 )
             }
 
+            is EditChallengeAction.ChangeMotivations -> {
+                if (action.motivation1.isEmpty() && action.motivation2.isEmpty() && action.motivation3.isEmpty()) {
+                    subState
+                } else {
+                    subState.copy(
+                        type = MOTIVATIONS_CHANGED,
+                        motivation1 = action.motivation1,
+                        motivation2 = action.motivation2,
+                        motivation3 = action.motivation3
+                    )
+                }
+            }
+
             is EditChallengeAction.Validate -> {
                 val errors = Validator.validate(action).check<ValidationError> {
                     "name" {
@@ -100,7 +118,6 @@ object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
                     name = action.name,
                     difficulty = Challenge.Difficulty.values()[action.selectedDifficultyPosition]
                 )
-                subState
             }
             else -> subState
     }
@@ -143,6 +160,7 @@ data class EditChallengeViewState(
         ICON_CHANGED,
         VALIDATION_ERROR_EMPTY_NAME,
         VALIDATION_SUCCESSFUL,
-        END_DATE_CHANGED
+        END_DATE_CHANGED,
+        MOTIVATIONS_CHANGED
     }
 }

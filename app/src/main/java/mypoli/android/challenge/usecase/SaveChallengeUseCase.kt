@@ -39,7 +39,8 @@ class SaveChallengeUseCase(
                 color = parameters.color,
                 icon = parameters.icon,
                 difficulty = parameters.difficulty,
-                end = parameters.end
+                end = parameters.end,
+                motivations = parameters.motivations
             )
         )
     }
@@ -75,7 +76,7 @@ class SaveChallengeUseCase(
         val difficulty: Challenge.Difficulty,
         val end: LocalDate,
         val motivations: List<String>,
-        val allQuests: List<BaseQuest>,
-        val selectedQuestIds: Set<String>
+        val allQuests: List<BaseQuest> = listOf(),
+        val selectedQuestIds: Set<String> = setOf()
     )
 }
