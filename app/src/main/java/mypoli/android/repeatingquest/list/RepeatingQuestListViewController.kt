@@ -16,6 +16,7 @@ import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.ionicons_typeface_library.Ionicons
 import kotlinx.android.synthetic.main.controller_repeating_quest_list.view.*
 import kotlinx.android.synthetic.main.item_repeating_quest.view.*
+import kotlinx.android.synthetic.main.view_empty_list.view.*
 import mypoli.android.R
 import mypoli.android.common.ViewUtils
 import mypoli.android.common.redux.android.ReduxViewController
@@ -65,7 +66,14 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
         when (state.type) {
             CHANGED -> {
                 view.loader.visible = false
-                view.emptyContainer.visible = state.showEmptyView
+
+
+                if (state.showEmptyView) {
+                    view.emptyContainer.visible = state.showEmptyView
+                    view.emptyImage.setImageResource(R.drawable.rq_list_empty_state)
+                    view.emptyTitle.setText(R.string.empty_repeating_quests_title)
+                    view.emptyText.setText(R.string.empty_repeating_quests_text)
+                }
 
                 (view.repeatingQuestList.adapter as RepeatingQuestAdapter).updateAll(
                     state.toViewModels(
