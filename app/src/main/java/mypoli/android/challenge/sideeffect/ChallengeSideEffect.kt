@@ -6,6 +6,8 @@ import mypoli.android.challenge.add.AddChallengeSummaryAction
 import mypoli.android.challenge.add.AddChallengeViewState
 import mypoli.android.challenge.edit.EditChallengeAction
 import mypoli.android.challenge.edit.EditChallengeViewState
+import mypoli.android.challenge.show.ChallengeAction
+import mypoli.android.challenge.usecase.RemoveChallengeUseCase
 import mypoli.android.challenge.usecase.SaveChallengeUseCase
 import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
 import mypoli.android.common.AppSideEffect
@@ -25,6 +27,7 @@ class ChallengeSideEffect : AppSideEffect() {
     private val repeatingQuestRepository by required { repeatingQuestRepository }
     private val saveQuestsForChallengeUseCase by required { saveQuestsForChallengeUseCase }
     private val saveChallengeUseCase by required { saveChallengeUseCase }
+    private val removeChallengeUseCase by required { removeChallengeUseCase }
 
     override suspend fun doExecute(action: Action, state: AppState) {
         when (action) {
@@ -78,6 +81,13 @@ class ChallengeSideEffect : AppSideEffect() {
                     )
                 )
             }
+
+            is ChallengeAction.Remove ->
+                removeChallengeUseCase.execute(
+                    RemoveChallengeUseCase.Params(
+                        action.challengeId
+                    )
+                )
         }
 
     }
@@ -86,5 +96,6 @@ class ChallengeSideEffect : AppSideEffect() {
         action is QuestPickerAction
             || action is AddChallengeSummaryAction
             || action is EditChallengeAction
+            || action is ChallengeAction
 
 }

@@ -182,7 +182,7 @@ class ChallengeViewController(args: Bundle? = null) :
         }
     }
 
-    override fun render(state: ChallengeViewState, view: View) =
+    override fun render(state: ChallengeViewState, view: View) {
         when (state) {
             is ChallengeViewState.Changed -> {
                 colorLayout(state, view)
@@ -214,9 +214,14 @@ class ChallengeViewController(args: Bundle? = null) :
                 renderChart(state, view)
                 renderQuests(state, view)
             }
+
+            ChallengeViewState.Removed ->
+                router.handleBack()
+
             else -> {
             }
         }
+    }
 
     private fun renderQuests(state: ChallengeViewState.Changed, view: View) {
         (view.questList.adapter as QuestAdapter).updateAll(state.questViewModels)

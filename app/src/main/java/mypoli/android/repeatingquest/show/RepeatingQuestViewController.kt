@@ -158,7 +158,7 @@ class RepeatingQuestViewController(args: Bundle? = null) :
             }
 
             RepeatingQuestViewState.Removed ->
-                router.popCurrentController()
+                router.handleBack()
 
             is RepeatingQuestViewState.HistoryChanged ->
                 view.historyChart.updateData(state.history)
