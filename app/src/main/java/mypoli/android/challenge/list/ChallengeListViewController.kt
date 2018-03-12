@@ -16,6 +16,8 @@ import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.ionicons_typeface_library.Ionicons
 import kotlinx.android.synthetic.main.controller_challenge_list.view.*
 import kotlinx.android.synthetic.main.item_challenge.view.*
+import kotlinx.android.synthetic.main.view_empty_list.view.*
+import kotlinx.android.synthetic.main.view_loader.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
 import mypoli.android.challenge.show.ChallengeViewController
@@ -71,12 +73,32 @@ class ChallengeListViewController(args: Bundle? = null) :
 
     override fun render(state: ChallengeListViewState, view: View) {
         when (state) {
+
+            is ChallengeListViewState.Loading -> {
+                view.loader.invisible()
+                view.emptyContainer.invisible()
+                view.challengeList.invisible()
+            }
+
             is ChallengeListViewState.Changed -> {
+                view.challengeList.visible()
+                view.loader.invisible()
+                view.emptyContainer.invisible()
                 (view.challengeList.adapter as ChallengeAdapter).updateAll(
                     state.toViewModels(
                         view.context
                     )
                 )
+            }
+
+            ChallengeListViewState.Empty -> {
+                view.emptyContainer.visible()
+                view.loader.invisible()
+                view.challengeList.invisible()
+
+                view.emptyImage.setImageResource(R.drawable.challenge_list_empty_state)
+                view.emptyTitle.setText(R.string.empty_challenges_title)
+                view.emptyText.setText(R.string.empty_challenges_text)
             }
         }
     }
