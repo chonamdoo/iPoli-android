@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_calendar_picker.view.*
 import kotlinx.android.synthetic.main.item_calendar_picker.view.*
+import kotlinx.android.synthetic.main.view_dialog_header.view.*
 import mypoli.android.R
 import mypoli.android.common.view.ReduxDialogController
 import mypoli.android.common.view.recyclerview.SimpleViewHolder
 import mypoli.android.event.Calendar
+import mypoli.android.pet.AndroidPetAvatar
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -41,8 +43,12 @@ class CalendarPickerDialogController :
         savedViewState: Bundle?
     ): AlertDialog {
         return dialogBuilder
-            .setPositiveButton("SYNC SELECTED") { _, _ -> pickedCalendarsListener(listOf()) }
+            .setPositiveButton(R.string.sync_selected) { _, _ -> pickedCalendarsListener(listOf()) }
             .create()
+    }
+
+    override fun onHeaderViewCreated(headerView: View) {
+        headerView.dialogHeaderTitle.setText(R.string.calendar_picker_title)
     }
 
     override fun onCreateContentView(inflater: LayoutInflater, savedViewState: Bundle?): View {
@@ -58,6 +64,7 @@ class CalendarPickerDialogController :
     override fun render(state: CalendarPickerViewState, view: View) {
         when (state) {
             is CalendarPickerViewState.CalendarsLoaded -> {
+                changeIcon(state.petHeadImage)
                 (view.calendarList.adapter as CalendarAdapter).updateAll(state.calendars)
             }
         }
@@ -82,6 +89,10 @@ class CalendarPickerDialogController :
             view.calendarName.text = vm.name
 
             view.calendarColor.backgroundTintList = ColorStateList.valueOf(vm.color)
+
+            view.setOnClickListener {
+                view.calendarCheckBox.toggle()
+            }
         }
 
         fun updateAll(viewModels: List<Calendar>) {
@@ -91,4 +102,7 @@ class CalendarPickerDialogController :
 
         override fun getItemCount() = viewModels.size
     }
+
+    private val CalendarPickerViewState.CalendarsLoaded.petHeadImage
+        get() = AndroidPetAvatar.valueOf(petAvatar.name).headImage
 }

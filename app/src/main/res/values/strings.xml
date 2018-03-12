@@ -1165,4 +1165,6 @@
     <string name="ends_today">Ends Today</string>
     <string name="ends_in_days">Ends in %d days</string>
     <string name="ends_at_date">Ends at %s</string>
+    <string name="calendar_picker_title">Which Calendars to sync?</string>
+    <string name="sync_selected">Sync selected</string>
 </resources>

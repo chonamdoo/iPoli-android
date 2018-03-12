@@ -6,7 +6,7 @@ import mypoli.android.common.DataLoadedAction
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.event.Calendar
-import timber.log.Timber
+import mypoli.android.pet.PetAvatar
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -27,10 +27,11 @@ object CalendarPickerReducer : BaseViewStateReducer<CalendarPickerViewState>() {
         action: Action
     ) =
         when (action) {
-            is DataLoadedAction.CalendarsChanged -> {
-                Timber.d("AAA ${action.calendars}")
-                CalendarPickerViewState.CalendarsLoaded(action.calendars.filter { it.isVisible })
-            }
+            is DataLoadedAction.CalendarsChanged ->
+                CalendarPickerViewState.CalendarsLoaded(
+                    petAvatar = state.dataState.player!!.pet.avatar,
+                    calendars = action.calendars.filter { it.isVisible }
+                )
             else ->
                 subState
         }
@@ -41,6 +42,9 @@ object CalendarPickerReducer : BaseViewStateReducer<CalendarPickerViewState>() {
 sealed class CalendarPickerViewState : ViewState {
 
     object Loading : CalendarPickerViewState()
-    data class CalendarsLoaded(val calendars: List<Calendar>) : CalendarPickerViewState()
+    data class CalendarsLoaded(
+        val petAvatar: PetAvatar,
+        val calendars: List<Calendar>
+    ) : CalendarPickerViewState()
 }
 
