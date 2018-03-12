@@ -4,6 +4,7 @@ import mypoli.android.challenge.edit.EditChallengeViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
+import mypoli.android.common.Validator
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
 import mypoli.android.quest.Color
@@ -19,6 +20,10 @@ sealed class EditChallengeAction : Action {
     data class ChangeIcon(val icon: Icon?) : EditChallengeAction()
     data class ChangeColor(val color: Color) : EditChallengeAction()
     data class ChangeEndDate(val date: LocalDate) : EditChallengeAction()
+    data class Validate(val name: String, val selectedDifficultyPosition: Int) :
+        EditChallengeAction()
+
+    object Save : EditChallengeAction()
 }
 
 object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
@@ -79,6 +84,24 @@ object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
                     end = action.date
                 )
             }
+
+            is EditChallengeAction.Validate -> {
+                val errors = Validator.validate(action).check<ValidationError> {
+                    "name" {
+                        given { name.isEmpty() } addError ValidationError.EMPTY_NAME
+                    }
+                }
+                subState.copy(
+                    type = if (errors.isEmpty()) {
+                        VALIDATION_SUCCESSFUL
+                    } else {
+                        VALIDATION_ERROR_EMPTY_NAME
+                    },
+                    name = action.name,
+                    difficulty = Challenge.Difficulty.values()[action.selectedDifficultyPosition]
+                )
+                subState
+            }
             else -> subState
     }
 
@@ -96,7 +119,9 @@ object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
             motivation3 = ""
         )
 
-
+    enum class ValidationError {
+        EMPTY_NAME
+    }
 }
 
 data class EditChallengeViewState(
@@ -117,6 +142,7 @@ data class EditChallengeViewState(
         COLOR_CHANGED,
         ICON_CHANGED,
         VALIDATION_ERROR_EMPTY_NAME,
+        VALIDATION_SUCCESSFUL,
         END_DATE_CHANGED
     }
 }

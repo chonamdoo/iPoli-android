@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.*
+import android.widget.AdapterView
+import android.widget.TextView
 import com.mikepenz.iconics.IconicsDrawable
 import kotlinx.android.synthetic.main.controller_edit_challenge.view.*
 import mypoli.android.R
@@ -64,7 +66,12 @@ class EditChallengeViewController(args : Bundle? = null) :
                 true
             }
             R.id.actionSave -> {
-//                dispatch(EditRepeatingQuestAction.Save)
+                dispatch(
+                    EditChallengeAction.Validate(
+                        view!!.challengeName.text.toString(),
+                        view!!.challengeDifficultyValue.selectedItemPosition
+                    )
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -91,6 +98,15 @@ class EditChallengeViewController(args : Bundle? = null) :
 
             END_DATE_CHANGED -> {
                 renderEndDate(view, state)
+            }
+
+            VALIDATION_ERROR_EMPTY_NAME -> {
+                view.challengeTextLayout.error = "Think of a name"
+            }
+
+            VALIDATION_SUCCESSFUL -> {
+                dispatch(EditChallengeAction.Save)
+                router.popCurrentController()
             }
         }
     }
@@ -129,7 +145,29 @@ class EditChallengeViewController(args : Bundle? = null) :
         view: View,
         state: EditChallengeViewState
     ) {
-        view.challengeDifficultyValue.text = state.difficultyText
+        view.challengeDifficultyValue.setSelection(state.difficultyIndex)
+        styleSelectedDifficulty(view)
+
+        view.challengeDifficultyValue.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    v: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    styleSelectedDifficulty(view)
+                }
+            }
+    }
+
+    private fun styleSelectedDifficulty(view: View) {
+        val item = view.challengeDifficultyValue.selectedView as TextView
+        item.setTextAppearance(item.context, R.style.TextAppearance_AppCompat_Caption)
+        item.setPadding(0, 0, 0, 0)
     }
 
     private fun renderEndDate(
@@ -198,8 +236,8 @@ class EditChallengeViewController(args : Bundle? = null) :
     private val EditChallengeViewState.formattedDate: String
         get() = DateFormatter.format(view!!.context, end)
 
-    private val EditChallengeViewState.difficultyText: String
-        get() = view!!.resources.getStringArray(R.array.difficulties)[difficulty.ordinal]
+    private val EditChallengeViewState.difficultyIndex: Int
+        get() = difficulty.ordinal
 
     private val EditChallengeViewState.iconDrawable: Drawable
         get() =
