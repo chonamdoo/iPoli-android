@@ -6,9 +6,6 @@ import mypoli.android.common.BaseViewStateReducer
 import mypoli.android.common.DataLoadedAction
 import mypoli.android.common.mvi.ViewState
 import mypoli.android.common.redux.Action
-import mypoli.android.quest.Color
-import mypoli.android.quest.Icon
-import org.threeten.bp.LocalDate
 
 /**
  * Created by Venelin Valkov <venelin@mypoli.fun>
@@ -25,37 +22,16 @@ object ChallengeListReducer : BaseViewStateReducer<ChallengeListViewState>() {
         state: AppState,
         subState: ChallengeListViewState,
         action: Action
-    ) = when (action) {
-        is ChallengeListAction.Load -> {
-            createState(
-                listOf(
-                    Challenge(
-                        name = "Test challenge",
-                        color = Color.RED,
-                        icon = Icon.HEART,
-                        difficulty = Challenge.Difficulty.HELL,
-                        end = LocalDate.now().plusWeeks(1),
-                        motivations = listOf("test")
-                    ),
-                    Challenge(
-                        name = "Run 5k marathon",
-                        color = Color.GREEN,
-                        icon = Icon.RUN,
-                        difficulty = Challenge.Difficulty.HELL,
-                        end = LocalDate.now().plusWeeks(1),
-                        motivations = listOf("test")
-                    )
-                )
-            )
-//            createState(state.dataState.challenges)
-        }
+    ) =
+        when (action) {
+            is ChallengeListAction.Load ->
+                createState(state.dataState.challenges)
 
-        is DataLoadedAction.ChallengesChanged -> {
-            createState(action.challenges)
-        }
+            is DataLoadedAction.ChallengesChanged ->
+                createState(action.challenges)
 
-        else -> subState
-    }
+            else -> subState
+        }
 
     private fun createState(challenges: List<Challenge>): ChallengeListViewState {
         return when {
