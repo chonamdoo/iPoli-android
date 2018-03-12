@@ -143,7 +143,6 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
                         .popChangeHandler(changeHandler)
                 )
             }
-
         }
 
         override fun onCreateViewHolder(

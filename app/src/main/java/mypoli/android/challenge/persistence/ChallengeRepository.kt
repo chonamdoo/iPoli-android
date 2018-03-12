@@ -2,6 +2,7 @@ package mypoli.android.challenge.persistence
 
 import android.content.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.datetime.Time
 import mypoli.android.common.datetime.instant
@@ -31,6 +32,11 @@ class FirestoreChallengeRepository(
 
     override val collectionReference
         get() = database.collection("players").document(playerId).collection("challenges")
+
+    override fun listenForAll() =
+        collectionReference
+            .orderBy("end", Query.Direction.ASCENDING)
+            .listenForChanges()
 
     override fun toEntityObject(dataMap: MutableMap<String, Any?>): Challenge {
         val c = DbChallenge(dataMap.withDefault {

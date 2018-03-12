@@ -220,11 +220,10 @@ abstract class BaseCollectionFirestoreRepository<E, out T>(
         return c
     }
 
-    override fun listenForAll() = listen(collectionReference)
+    override fun listenForAll() = collectionReference.listenForChanges()
 
-    override fun remove(entity: E) {
+    override fun remove(entity: E) =
         remove(entity.id)
-    }
 
     override fun remove(id: String) {
         val updates = mapOf(
