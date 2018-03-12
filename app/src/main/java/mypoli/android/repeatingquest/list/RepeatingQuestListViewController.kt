@@ -59,8 +59,6 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
     override fun onAttach(view: View) {
         super.onAttach(view)
         toolbarTitle = stringRes(R.string.drawer_repeating_quests)
-        activity?.window?.navigationBarColor = attrData(R.attr.colorPrimary)
-        activity?.window?.statusBarColor = attrData(R.attr.colorPrimaryDark)
     }
 
     override fun render(state: RepeatingQuestListViewState, view: View) {
