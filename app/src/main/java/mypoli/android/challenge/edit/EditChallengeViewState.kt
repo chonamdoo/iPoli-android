@@ -1,7 +1,6 @@
 package mypoli.android.challenge.edit
 
-import mypoli.android.challenge.edit.EditChallengeViewState.StateType.DATA_LOADED
-import mypoli.android.challenge.edit.EditChallengeViewState.StateType.LOADING
+import mypoli.android.challenge.edit.EditChallengeViewState.StateType.*
 import mypoli.android.challenge.entity.Challenge
 import mypoli.android.common.AppState
 import mypoli.android.common.BaseViewStateReducer
@@ -17,6 +16,9 @@ import org.threeten.bp.LocalDate
  */
 sealed class EditChallengeAction : Action {
     data class Load(val challengeId: String) : EditChallengeAction()
+    data class ChangeIcon(val icon: Icon?) : EditChallengeAction()
+    data class ChangeColor(val color: Color) : EditChallengeAction()
+    data class ChangeEndDate(val date: LocalDate) : EditChallengeAction()
 }
 
 object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
@@ -54,6 +56,27 @@ object EditChallengeReducer : BaseViewStateReducer<EditChallengeViewState>() {
                     motivation1 = c.motivation1,
                     motivation2 = c.motivation2,
                     motivation3 = c.motivation3
+                )
+            }
+
+            is EditChallengeAction.ChangeIcon -> {
+                subState.copy(
+                    type = ICON_CHANGED,
+                    icon = action.icon
+                )
+            }
+
+            is EditChallengeAction.ChangeColor -> {
+                subState.copy(
+                    type = COLOR_CHANGED,
+                    color = action.color
+                )
+            }
+
+            is EditChallengeAction.ChangeEndDate -> {
+                subState.copy(
+                    type = END_DATE_CHANGED,
+                    end = action.date
                 )
             }
             else -> subState
@@ -94,5 +117,6 @@ data class EditChallengeViewState(
         COLOR_CHANGED,
         ICON_CHANGED,
         VALIDATION_ERROR_EMPTY_NAME,
+        END_DATE_CHANGED
     }
 }

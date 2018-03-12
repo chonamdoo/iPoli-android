@@ -138,7 +138,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/challenge_end_date_container"
+                android:id="@+id/challengeEndDateContainer"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"

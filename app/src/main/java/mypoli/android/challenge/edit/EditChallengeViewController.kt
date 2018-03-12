@@ -1,5 +1,6 @@
 package mypoli.android.challenge.edit
 
+import android.app.DatePickerDialog
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -7,10 +8,11 @@ import android.view.*
 import com.mikepenz.iconics.IconicsDrawable
 import kotlinx.android.synthetic.main.controller_edit_challenge.view.*
 import mypoli.android.R
-import mypoli.android.challenge.edit.EditChallengeViewState.StateType.DATA_LOADED
+import mypoli.android.challenge.edit.EditChallengeViewState.StateType.*
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.*
+import org.threeten.bp.LocalDate
 
 /**
  * Created by Polina Zhelyazkova <polina@mypoli.fun>
@@ -72,29 +74,105 @@ class EditChallengeViewController(args : Bundle? = null) :
         when (state.type) {
             DATA_LOADED -> {
                 view.challengeName.setText(state.name)
-                if (state.motivation1.isNotEmpty()) {
-                    view.challengeMotivation1Value.visibility = View.VISIBLE
-                    view.challengeMotivation1Value.text = state.motivation1
-                } else {
-                    view.challengeMotivation1Value.visibility = View.GONE
-                }
-                if (state.motivation2.isNotEmpty()) {
-                    view.challengeMotivation2Value.visibility = View.VISIBLE
-                    view.challengeMotivation2Value.text = state.motivation2
-                } else {
-                    view.challengeMotivation2Value.visibility = View.GONE
-                }
-                if (state.motivation3.isNotEmpty()) {
-                    view.challengeMotivation3Value.visibility = View.VISIBLE
-                    view.challengeMotivation3Value.text = state.motivation3
-                } else {
-                    view.challengeMotivation3Value.visibility = View.GONE
-                }
-                view.challengeEndDateValue.text = state.formattedDate
-                view.challengeDifficultyValue.text = state.difficultyText
-                view.challengeIconIcon.setImageDrawable(state.iconDrawable)
-                colorLayout(view, state)
+                renderMotivations(view, state)
+                renderEndDate(view, state)
+                renderDifficulty(view, state)
+                renderIcon(view, state)
+                renderColor(view, state)
             }
+
+            ICON_CHANGED -> {
+                renderIcon(view, state)
+            }
+
+            COLOR_CHANGED -> {
+                renderColor(view, state)
+            }
+
+            END_DATE_CHANGED -> {
+                renderEndDate(view, state)
+            }
+        }
+    }
+
+    private fun renderColor(
+        view: View,
+        state: EditChallengeViewState
+    ) {
+        colorLayout(view, state)
+        view.challengeColorContainer.setOnClickListener {
+            ColorPickerDialogController({
+                dispatch(EditChallengeAction.ChangeColor(it.color))
+            }, state.color.androidColor).showDialog(
+                router,
+                "pick_color_tag"
+            )
+        }
+    }
+
+    private fun renderIcon(
+        view: View,
+        state: EditChallengeViewState
+    ) {
+        view.challengeIconIcon.setImageDrawable(state.iconDrawable)
+        view.challengeIconContainer.setOnClickListener {
+            IconPickerDialogController({ icon ->
+                dispatch(EditChallengeAction.ChangeIcon(icon))
+            }, state.icon?.androidIcon).showDialog(
+                router,
+                "pick_icon_tag"
+            )
+        }
+    }
+
+    private fun renderDifficulty(
+        view: View,
+        state: EditChallengeViewState
+    ) {
+        view.challengeDifficultyValue.text = state.difficultyText
+    }
+
+    private fun renderEndDate(
+        view: View,
+        state: EditChallengeViewState
+    ) {
+        view.challengeEndDateValue.text = state.formattedDate
+        val date = state.end
+        view.challengeEndDateContainer.setOnClickListener {
+            DatePickerDialog(
+                view.context, R.style.Theme_myPoli_AlertDialog,
+                DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    dispatch(
+                        EditChallengeAction.ChangeEndDate(
+                            LocalDate.of(year, month + 1, dayOfMonth)
+                        )
+                    )
+                }, date.year, date.month.value - 1, date.dayOfMonth
+            ).show()
+        }
+    }
+
+    private fun renderMotivations(
+        view: View,
+        state: EditChallengeViewState
+    ) {
+        if (state.motivation1.isNotEmpty()) {
+            view.challengeMotivation1Value.visibility = View.VISIBLE
+            view.challengeMotivation1Value.text = state.motivation1
+        } else {
+            view.challengeMotivation1Value.visibility = View.GONE
+        }
+        if (state.motivation2.isNotEmpty()) {
+            view.challengeMotivation2Value.visibility = View.VISIBLE
+            view.challengeMotivation2Value.text = state.motivation2
+        } else {
+            view.challengeMotivation2Value.visibility = View.GONE
+        }
+        if (state.motivation3.isNotEmpty()) {
+            view.challengeMotivation3Value.visibility = View.VISIBLE
+            view.challengeMotivation3Value.text = state.motivation3
+        } else {
+            view.challengeMotivation3Value.visibility = View.GONE
         }
     }
 
