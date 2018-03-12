@@ -37,4 +37,13 @@ data class Challenge(
     val nextEndTime: Time?
         get() = nextStartTime?.plus(nextDuration!!)
 
+    val motivation1: String
+        get() = if (motivations.isNotEmpty()) motivations[0] else ""
+
+    val motivation2: String
+        get() = if (motivations.size > 1) motivations[1] else ""
+
+    val motivation3: String
+        get() = if (motivations.size > 2) motivations[2] else ""
+
 }

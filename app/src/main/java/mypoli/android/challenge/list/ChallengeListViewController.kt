@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.controller_challenge_list.view.*
 import kotlinx.android.synthetic.main.item_challenge.view.*
 import mypoli.android.R
 import mypoli.android.challenge.add.AddChallengeViewController
+import mypoli.android.challenge.edit.EditChallengeViewController
 import mypoli.android.challenge.show.ChallengeViewController
 import mypoli.android.common.datetime.daysUntil
 import mypoli.android.common.redux.android.ReduxViewController
@@ -122,7 +123,8 @@ class ChallengeListViewController(args: Bundle? = null) :
             view.setOnClickListener {
                 val changeHandler = FadeChangeHandler()
                 rootRouter.pushController(
-                    RouterTransaction.with(ChallengeViewController(vm.id))
+//                    RouterTransaction.with(ChallengeViewController(vm.id))
+                    RouterTransaction.with(EditChallengeViewController(vm.id))
                         .pushChangeHandler(changeHandler)
                         .popChangeHandler(changeHandler)
                 )
