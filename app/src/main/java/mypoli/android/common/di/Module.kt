@@ -378,7 +378,12 @@ class MainUseCaseModule : UseCaseModule, Injects<Module> {
         get() = SaveChallengeUseCase(challengeRepository, saveQuestsForChallengeUseCase)
 
     override val removeChallengeUseCase
-        get() = RemoveChallengeUseCase(challengeRepository)
+        get() = RemoveChallengeUseCase(
+            challengeRepository,
+            questRepository,
+            repeatingQuestRepository,
+            removeQuestFromChallengeUseCase
+        )
 }
 
 interface UseCaseModule {

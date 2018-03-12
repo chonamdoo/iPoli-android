@@ -64,6 +64,8 @@ interface QuestRepository : CollectionRepository<Quest> {
         repeatingQuestId: String,
         startDate: LocalDate = LocalDate.now()
     )
+
+    fun findAllForChallenge(challengeId: String): List<Quest>
 }
 
 data class DbQuest(override val map: MutableMap<String, Any?> = mutableMapOf()) :
@@ -148,6 +150,13 @@ class FirestoreQuestRepository(
                 it.reference.delete()
             }
     }
+
+    override fun findAllForChallenge(challengeId: String) =
+        collectionReference
+            .whereEqualTo("challengeId", challengeId)
+            .whereEqualTo("repeatingQuestId", null)
+            .entities
+
 
     override fun findCompletedForRepeatingQuestInPeriod(
         repeatingQuestId: String,

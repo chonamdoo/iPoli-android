@@ -22,6 +22,7 @@ import kotlin.coroutines.experimental.CoroutineContext
  */
 interface RepeatingQuestRepository : CollectionRepository<RepeatingQuest> {
     fun findAllActive(currentDate: LocalDate = LocalDate.now()): List<RepeatingQuest>
+    fun findAllForChallenge(challengeId: String): List<RepeatingQuest>
 }
 
 data class DbRepeatingQuest(override val map: MutableMap<String, Any?> = mutableMapOf()) :
@@ -84,6 +85,10 @@ class FirestoreRepeatingQuestRepository(
         return rqsWithEndDate + rqsWithoutEndDate
     }
 
+    override fun findAllForChallenge(challengeId: String) =
+        collectionReference
+            .whereEqualTo("challengeId", challengeId)
+            .entities
 
     override fun toEntityObject(dataMap: MutableMap<String, Any?>): RepeatingQuest {
         val rq = DbRepeatingQuest(dataMap.withDefault {
