@@ -65,7 +65,7 @@ class RepeatingQuestListViewController(args: Bundle? = null) :
         when (state.type) {
             CHANGED -> {
                 view.loader.visible = false
-                view.emptyGroup.visible = state.showEmptyView
+                view.emptyContainer.visible = state.showEmptyView
 
                 (view.repeatingQuestList.adapter as RepeatingQuestAdapter).updateAll(
                     state.toViewModels(
