@@ -4,6 +4,8 @@ import mypoli.android.challenge.QuestPickerAction
 import mypoli.android.challenge.QuestPickerViewState
 import mypoli.android.challenge.add.AddChallengeSummaryAction
 import mypoli.android.challenge.add.AddChallengeViewState
+import mypoli.android.challenge.edit.EditChallengeAction
+import mypoli.android.challenge.edit.EditChallengeViewState
 import mypoli.android.challenge.usecase.SaveChallengeUseCase
 import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
 import mypoli.android.common.AppSideEffect
@@ -62,6 +64,20 @@ class ChallengeSideEffect : AppSideEffect() {
                     )
                 )
             }
+
+            is EditChallengeAction.Save -> {
+                val s = state.stateFor(EditChallengeViewState::class.java)
+                saveChallengeUseCase.execute(
+                    SaveChallengeUseCase.Params(
+                        name = s.name,
+                        color = s.color,
+                        icon = s.icon,
+                        difficulty = s.difficulty,
+                        end = s.end,
+                        motivations = listOf(s.motivation1, s.motivation2, s.motivation3)
+                    )
+                )
+            }
         }
 
     }
@@ -69,5 +85,6 @@ class ChallengeSideEffect : AppSideEffect() {
     override fun canHandle(action: Action) =
         action is QuestPickerAction
             || action is AddChallengeSummaryAction
+            || action is EditChallengeAction
 
 }
