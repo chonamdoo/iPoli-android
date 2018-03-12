@@ -91,6 +91,11 @@ object AppDataReducer : Reducer<AppState, AppDataState> {
                     agendaItems = action.agendaItems
                 )
 
+            is DataLoadedAction.ChallengesChanged ->
+                subState.copy(
+                    challenges = action.challenges
+                )
+
             is DataLoadedAction.EventsChanged ->
                 subState.copy(
                     events = action.events
