@@ -24,8 +24,8 @@ import kotlinx.android.synthetic.main.drawer_header_home.view.*
 import mypoli.android.Constants
 import mypoli.android.MainActivity
 import mypoli.android.R
-import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.challenge.list.ChallengeListViewController
+import mypoli.android.challenge.predefined.category.ChallengeCategoryListViewController
 import mypoli.android.common.EmailUtils
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
@@ -35,6 +35,7 @@ import mypoli.android.pet.PetViewController
 import mypoli.android.player.auth.AuthViewController
 import mypoli.android.quest.schedule.ScheduleViewController
 import mypoli.android.repeatingquest.list.RepeatingQuestListViewController
+import mypoli.android.store.GemStoreViewController
 import mypoli.android.store.theme.ThemeStoreViewController
 import org.json.JSONObject
 import space.traversal.kapsule.required
@@ -113,10 +114,12 @@ class HomeViewController(args: Bundle? = null) :
             R.id.challenges ->
                 changeChildController(ChallengeListViewController())
 
+            R.id.predefinedChallenges ->
+                changeChildController(ChallengeCategoryListViewController())
+
             R.id.store -> {
                 router.pushController(
-//                    RouterTransaction.with(GemStoreViewController())
-                    RouterTransaction.with(QuestPickerViewController(""))
+                    RouterTransaction.with(GemStoreViewController())
                         .pushChangeHandler(fadeChangeHandler)
                         .popChangeHandler(fadeChangeHandler)
                 )

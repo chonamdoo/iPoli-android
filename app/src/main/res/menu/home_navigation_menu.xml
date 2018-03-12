@@ -29,6 +29,12 @@
             android:title="@string/drawer_challenges" />
 
         <item
+            android:id="@+id/predefinedChallenges"
+            android:checked="false"
+            android:icon="@drawable/ic_peak_black_24dp"
+            android:title="@string/drawer_predefined_challenges" />
+
+        <item
             android:id="@+id/growth"
             android:checked="false"
             android:icon="@drawable/ic_growth_white_24dp"
