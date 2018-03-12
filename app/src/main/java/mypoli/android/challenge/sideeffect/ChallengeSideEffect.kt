@@ -7,7 +7,9 @@ import mypoli.android.challenge.add.AddChallengeViewState
 import mypoli.android.challenge.edit.EditChallengeAction
 import mypoli.android.challenge.edit.EditChallengeViewState
 import mypoli.android.challenge.show.ChallengeAction
+import mypoli.android.challenge.show.ChallengeViewState
 import mypoli.android.challenge.usecase.RemoveChallengeUseCase
+import mypoli.android.challenge.usecase.RemoveQuestFromChallengeUseCase
 import mypoli.android.challenge.usecase.SaveChallengeUseCase
 import mypoli.android.challenge.usecase.SaveQuestsForChallengeUseCase
 import mypoli.android.common.AppSideEffect
@@ -28,6 +30,7 @@ class ChallengeSideEffect : AppSideEffect() {
     private val saveQuestsForChallengeUseCase by required { saveQuestsForChallengeUseCase }
     private val saveChallengeUseCase by required { saveChallengeUseCase }
     private val removeChallengeUseCase by required { removeChallengeUseCase }
+    private val removeQuestFromChallengeUseCase by required { removeQuestFromChallengeUseCase }
 
     override suspend fun doExecute(action: Action, state: AppState) {
         when (action) {
@@ -88,6 +91,27 @@ class ChallengeSideEffect : AppSideEffect() {
                         action.challengeId
                     )
                 )
+
+            is ChallengeAction.RemoveQuestFromChallenge -> {
+                val s = state.stateFor(ChallengeViewState::class.java) as ChallengeViewState.Changed
+                val q = s.quests[action.questIndex]
+
+                require(q is Quest || q is RepeatingQuest)
+
+                if (q is Quest) {
+                    removeQuestFromChallengeUseCase.execute(
+                        RemoveQuestFromChallengeUseCase.Params.WithQuestId(
+                            q.id
+                        )
+                    )
+                } else if (q is RepeatingQuest) {
+                    removeQuestFromChallengeUseCase.execute(
+                        RemoveQuestFromChallengeUseCase.Params.WithRepeatingQuestId(
+                            q.id
+                        )
+                    )
+                }
+            }
         }
 
     }

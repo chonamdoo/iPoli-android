@@ -6,6 +6,7 @@ import android.support.annotation.ColorRes
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
@@ -33,6 +34,7 @@ import mypoli.android.common.text.DateFormatter
 import mypoli.android.common.view.*
 import mypoli.android.quest.Quest
 import mypoli.android.quest.RepeatingQuest
+import mypoli.android.quest.schedule.agenda.widget.SwipeToCompleteCallback
 import mypoli.android.repeatingquest.show.RepeatingQuestViewController
 
 
@@ -70,6 +72,27 @@ class ChallengeViewController(args: Bundle? = null) :
         view.questList.layoutManager =
             LinearLayoutManager(container.context, LinearLayoutManager.VERTICAL, false)
         view.questList.adapter = QuestAdapter()
+
+        val swipeHandler = object : SwipeToCompleteCallback(
+            view.context,
+            R.drawable.ic_done_white_24dp,
+            R.color.md_green_500,
+            R.drawable.ic_delete_white_24dp,
+            R.color.md_red_500
+        ) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (direction == ItemTouchHelper.START) {
+                    dispatch(ChallengeAction.RemoveQuestFromChallenge(viewHolder.adapterPosition))
+                }
+            }
+
+            override fun getSwipeDirs(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) = ItemTouchHelper.START
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(view.questList)
 
         view.addQuests.setOnClickListener {
             val changeHandler = FadeChangeHandler()

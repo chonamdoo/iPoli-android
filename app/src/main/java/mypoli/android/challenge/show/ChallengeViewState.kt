@@ -20,6 +20,7 @@ import java.util.*
 sealed class ChallengeAction : Action {
     data class Load(val challengeId: String) : ChallengeAction()
     data class Remove(val challengeId: String) : ChallengeAction()
+    data class RemoveQuestFromChallenge(val questIndex: Int) : ChallengeAction()
 }
 
 object ChallengeReducer : BaseViewStateReducer<ChallengeViewState>() {
