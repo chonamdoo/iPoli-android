@@ -26,6 +26,7 @@ import mypoli.android.MainActivity
 import mypoli.android.R
 import mypoli.android.challenge.QuestPickerViewController
 import mypoli.android.challenge.list.ChallengeListViewController
+import mypoli.android.challenge.predefined.category.ChallengeCategoryListViewController
 import mypoli.android.common.EmailUtils
 import mypoli.android.common.redux.android.ReduxViewController
 import mypoli.android.common.view.*
@@ -112,6 +113,9 @@ class HomeViewController(args: Bundle? = null) :
 
             R.id.challenges ->
                 changeChildController(ChallengeListViewController())
+
+            R.id.predefinedChallenges ->
+                changeChildController(ChallengeCategoryListViewController())
 
             R.id.store -> {
                 router.pushController(

@@ -1171,4 +1171,5 @@
     <string name="calendar_picker_title">Which Calendars to sync?</string>
     <string name="sync_selected">Sync selected</string>
     <string name="challenge_motivations_question">Motivate yourself</string>
+    <string name="drawer_predefined_challenges">Planned Challenges</string>
 </resources>
